@@ -2,6 +2,61 @@ import pygame
 import sys
 import random
 
+class Player:
+    name = "Nobody"
+    health = 0 
+    baseAtk = 0
+    mana = 0
+    luck = 10
+    skill = None
+
+    def __init__(self):
+        return
+    
+    def setName(self, name):
+        self.name = name
+
+    def selectionMenu(self):
+        #print choose your class: 
+
+        return
+    
+    def set_mage(self):
+        self.health = 8
+        self.baseAtk = 3
+        self.mana = 10
+        sound_effect = pygame.mixer.Sound('Voices/Mage1.wav')
+        sound_effect.play()
+        #print you have selected mage
+
+    def set_knight(self):
+        self.health = 12
+        self.baseAtk = 5
+        self.mana = 5
+        sound_effect = pygame.mixer.Sound('Voices/Knight1.wav')
+        sound_effect.play()
+        #print in animation you have selected knight
+
+    def set_archer(self):
+        self.health = 10
+        self.baseAtk = 4
+        self.mana = 7
+        sound_effect = pygame.mixer.Sound('Voices/Archer1.wav')
+        sound_effect.play()
+        #print in animation you have selected archer
+
+    def set_unfortunate(self):
+        self.health = 1
+        self.baseAtk = 1
+        self.mana = 20
+        self.luck = 30
+        sound_effect = pygame.mixer.Sound('Voices/Unfortunate1.wav')
+        sound_effect.play()
+        #print in animation you have selected unfortunate
+
+
+player = Player()
+
 # Story Node class to hold story content, choices, and actions
 class StoryNode:
     def __init__(self, text, choices, actions=None):
@@ -25,8 +80,9 @@ def special_message():
 # Define the story nodes
 story_nodes = {
     "start": StoryNode(
-        "You wake up in a dark room. What will you do?", 
-        {"explore": "explore_room", "sleep": "go_back_to_sleep"}
+        "Hello adventurer! Choose your class:", 
+        {"Mage": "explore_room", "Knight": "explore_room", "Archer": "explore_room", "Unfortunate": "explore_room"},
+        actions={"Mage": [player.set_mage], "Knight": [player.set_knight], "Archer": [player.set_archer], "Unfortunate": [player.set_unfortunate]}
     ),
     "explore_room": StoryNode(
         "You find a mysterious key. What now?", 
@@ -44,60 +100,6 @@ story_nodes = {
         actions={}  # No actions for this node
     ),
 }
-
-class characterSelect:
-    name = "Nobody"
-    health = 0 
-    baseAtk = 0
-    mana = 0
-    luck = 10
-    skill = None
-
-    def __init__(self):
-        return
-    
-    def setName(self, name):
-        self.name = name
-
-    def selectionMenu(self):
-        #print choose your class: 
-
-        return
-    
-    def mage(self):
-        self.health = 8
-        self.baseAtk = 3
-        self.mana = 10
-        sound_effect = pygame.mixer.Sound('Voices/Mage1.wav')
-        sound_effect.play()
-        #print you have selected mage
-
-    def knight(self):
-        self.health = 12
-        self.baseAtk = 5
-        self.mana = 5
-        sound_effect = pygame.mixer.Sound('Voices/Knight1.wav')
-        sound_effect.play()
-        #print in animation you have selected knight
-
-    def archer(self):
-        self.health = 10
-        self.baseAtk = 4
-        self.mana = 7
-        sound_effect = pygame.mixer.Sound('Voices/Archer1.wav')
-        sound_effect.play()
-        #print in animation you have selected archer
-
-    def unfortunate(self):
-        self.health = 1
-        self.baseAtk = 1
-        self.mana = 20
-        self.luck = 30
-        sound_effect = pygame.mixer.Sound('Voices/Unfortunate1.wav')
-        sound_effect.play()
-        #print in animation you have selected unfortunate
-
-
 
 # Initialize Pygame
 pygame.init()
