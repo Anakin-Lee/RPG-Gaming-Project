@@ -1,6 +1,8 @@
 import pygame
 import sys
+import random
 pygame.init()
+pygame.mixer.init()
 
 # Set up the game window
 screen = pygame.display.set_mode((720, 480))
@@ -10,24 +12,57 @@ clock = pygame.time.Clock()
 FPS = 60
 
 class characterSelect:
+    name = "Nobody"
     health = 0 
     baseAtk = 0
     mana = 0
+    luck = 10
+    skill = None
 
-    def __init__(self, name):
+    def __init__(self):
         return
     
+    def setName(self, name):
+        self.name = name
+
     def selectionMenu(self):
+        #print choose your class: 
 
         return
     
     def mage(self):
-        return
-        
+        self.health = 8
+        self.baseAtk = 3
+        self.mana = 10
+        sound_effect = pygame.mixer.Sound('Voices/Mage1.wav')
+        sound_effect.play()
+        #print you have selected mage
+
     def knight(self):
-        return
+        self.health = 12
+        self.baseAtk = 5
+        self.mana = 5
+        sound_effect = pygame.mixer.Sound('Voices/Knight1.wav')
+        sound_effect.play()
+        #print in animation you have selected knight
+
     def archer(self):
-        return
+        self.health = 10
+        self.baseAtk = 4
+        self.mana = 7
+        sound_effect = pygame.mixer.Sound('Voices/Archer1.wav')
+        sound_effect.play()
+        #print in animation you have selected archer
+
+    def unfortunate(self):
+        self.health = 1
+        self.baseAtk = 1
+        self.mana = 20
+        self.luck = 30
+        sound_effect = pygame.mixer.Sound('Voices/Unfortunate1.wav')
+        sound_effect.play()
+        #print in animation you have selected unfortunate
+
     
 BG = (128, 128, 128)
 def draw_bg():
@@ -86,6 +121,9 @@ while run:
 
     pygame.display.flip()
 pygame.quit()
+
+
+
 
 
 
