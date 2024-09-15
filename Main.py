@@ -6,6 +6,35 @@ pygame.init()
 screen = pygame.display.set_mode((720, 480))
 pygame.display.set_caption('Adventure')
 
+clock = pygame.time.Clock()
+FPS = 60
+
+class characterSelect:
+    health = 0 
+    baseAtk = 0
+    mana = 0
+
+    def __init__(self, name):
+        return
+    
+    def selectionMenu(self):
+
+        return
+    
+    def mage(self):
+        return
+        
+    def knight(self):
+        return
+    def archer(self):
+        return
+    
+BG = (128, 128, 128)
+def draw_bg():
+    screen.fill(BG)
+# class gameController:
+
+
 #Sets up display text and settings
 font = pygame.font.SysFont(None, 30)
 """ def draw_text(text, font, text_col, x, y):
@@ -28,7 +57,7 @@ done = False
 #The while loop that keeps the game window open
 run = True
 while run:
-    screen.fill(('dark gray'))
+    draw_bg()
     timer.tick(60)
     pygame.draw.rect(screen, 'black', [0, 300, 800, 200])
 
@@ -61,24 +90,5 @@ pygame.quit()
 
 
 
-class characterSelect:
-    health = 0 
-    baseAtk = 0
-    mana = 0
 
-    def __init__(self, name):
-        return
-    
-    def selectionMenu(self):
-
-        return
-    
-    def mage(self):
-        return
-        
-    def knight(self):
-        return
-    def Archer(self):
-        return
-    
     
