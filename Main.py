@@ -56,6 +56,8 @@ class Player:
 
 
 player = Player()
+ememy = None
+
 
 # Story Node class to hold story content, choices, and actions
 class StoryNode:
@@ -76,6 +78,18 @@ def went_back_to_sleep():
 
 def special_message():
     print("This is a special action!")
+
+# Function for drawing characters based on location
+def draw_characters():
+
+
+    return
+
+
+
+
+
+
 
 # Define the story nodes
 story_nodes = {
@@ -129,6 +143,9 @@ current_node = "start"
 # Function to draw the current story node
 def draw_story(node):
     screen.fill(GREY)
+
+    draw_characters()
+
     pygame.draw.rect(screen, BLACK, [0, 300, 800, 200])
     
     # Render the main story text
@@ -142,6 +159,7 @@ def draw_story(node):
         choice_surface = choice_font.render(f"{i + 1}. {choice_text}", True, WHITE)
         screen.blit(choice_surface, (20, y_offset))
         y_offset += 30  # Move down for the next choice
+
 
 # Function to handle user input
 def handle_input(node, event):
