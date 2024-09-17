@@ -120,9 +120,31 @@ pygame.init()
 pygame.mixer.init()
 
 # Screen dimensions
-screen_width, screen_height = 720, 480
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("Interactive Story")
+screen_width = 720
+screen_height = 480
+current_width = screen_width
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE, pygame.SCALED)
+pygame.display.set_caption("Dead End Adventurer")
+
+def updateDimensions():
+    global screen_width 
+    screen_width = pygame.display.Info().current_w
+
+    global screen_height
+    screen_height = pygame.display.Info().current_h
+
+    global font
+    font = pygame.font.Font(None, int(36*screen_height/480))
+
+    global choice_font
+    choice_font = pygame.font.Font(None, int(28*screen_height/480))
+
+def adjust_w(num):
+    return int(num*screen_width/720)
+
+def adjust_h(num):
+    return int(num*screen_height/480)
+
 
 # Font settings
 font = pygame.font.Font(None, 36)
@@ -146,19 +168,19 @@ def draw_story(node):
 
     draw_characters()
 
-    pygame.draw.rect(screen, BLACK, [0, 300, 800, 200])
+    pygame.draw.rect(screen, BLACK, [0, adjust_h(300), screen_width, adjust_h(200)])
     
     # Render the main story text
     story_text = font.render(story_nodes[node].text, True, WHITE)
-    screen.blit(story_text, (10, 310))
+    screen.blit(story_text, (adjust_w(10), adjust_h(310)))
     
     # Render choices
     choices = story_nodes[node].choices
-    y_offset = 350  # Start point for choices on the screen
+    y_offset = adjust_h(350)  # Start point for choices on the screen
     for i, (choice_text, _) in enumerate(choices.items()):
         choice_surface = choice_font.render(f"{i + 1}. {choice_text}", True, WHITE)
-        screen.blit(choice_surface, (20, y_offset))
-        y_offset += 30  # Move down for the next choice
+        screen.blit(choice_surface, (adjust_w(20), y_offset))
+        y_offset += adjust_h(30)  # Move down for the next choice
 
 
 # Function to handle user input
@@ -187,12 +209,17 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         
-        # Handle input and move to the next story node
-        current_node = handle_input(current_node, event)
+    updateDimensions()
+    # Handle input and move to the next story node
+    current_node = handle_input(current_node, event)
     
     # Draw the current story and choices
     draw_story(current_node)
+
+    # print(pygame.display.Info().current_w, pygame.display.Info().current_h)
     
+    print(screen_width, screen_height)
+
     # Update the screen
     pygame.display.flip()
     
