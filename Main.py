@@ -122,7 +122,6 @@ pygame.mixer.init()
 # Screen dimensions
 screen_width = 720
 screen_height = 480
-current_width = screen_width
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE, pygame.SCALED)
 pygame.display.set_caption("Dead End Adventurer")
 
@@ -208,10 +207,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+        # Handle input and move to the next story node
+        current_node = handle_input(current_node, event)
         
     updateDimensions()
-    # Handle input and move to the next story node
-    current_node = handle_input(current_node, event)
+    
     
     # Draw the current story and choices
     draw_story(current_node)
