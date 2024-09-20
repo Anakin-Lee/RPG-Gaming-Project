@@ -114,14 +114,7 @@ def inventory():
 
 # Function for drawing characters based on location
 def draw_characters():
-
-
     return
-
-
-
-
-
 
 
 # Define the story nodes
@@ -134,7 +127,7 @@ story_nodes = {
     "explore_room": StoryNode(
         "You find a mysterious key. What now?", 
         {"take key": "to_door", "leave key": "to_door"},
-        action=lambda state: (print("Adding key in explore_room"), state.addItem('key')),
+        action=lambda state: state.addItem('key'),
         actions={"take key": [found_key, special_message]}
         
     ),
@@ -145,14 +138,7 @@ story_nodes = {
     ),
     "to_door": StoryNode(
     "You arrive at the door, what do you do?", 
-    {"check inventory": "inventory", "open the door": "open_door", "go back": "start"},
-    condition=lambda state: state.hasItem('key'),  # No actions for this node
-    actions={"check inventory": [inventory]}
-    ),
-    "inventory": StoryNode(
-        "Here is your inventory, what would you like to do now?",
-        {"you go back to the door": "to_door",},
-        
+    {"open the door": "open_door", "go back": "start"},
     ),
     "open_door": StoryNode(
         "You open the door and step into the unknown. End.",
@@ -234,7 +220,7 @@ def draw_inventory(inventory_text):
     inventory_surface = font.render(inventory_text, True, WHITE)
     screen.blit(inventory_surface, (adjust_w(10), adjust_h(10)))
 
-    # Optionally, you can add a "Back" option
+    # Adds a back button option
     back_surface = choice_font.render("Press any key to go back", True, WHITE)
     screen.blit(back_surface, (adjust_w(10), adjust_h(50)))
 
@@ -253,22 +239,10 @@ def handle_input(node, event):
                 if choice_text in story_nodes[node].actions:
                     for action in story_nodes[node].actions[choice_text]:
                         action()  # Call each action function
-
-                if next_node == "to_door":
-                    has_key = story_nodes[next_node].check_condition(player)  # Check if the player has the key
-                    print(f"Player inventory: {player.inventory()}")
-                    print(f"Condition to enter {next_node}: {has_key}")  # Debugging print
-                    if not has_key:
-                        print(f"Condition to enter {next_node} not met.")  # For debugging purposes
-                        return node  # Stay in the current node
                 
-                 # Execute node's action (like adding key) when transitioning
+                 # Execute node's action when transitioning
                 story_nodes[node].exe_action(player)
                 story_nodes[next_node].exe_action(player)
-                
-                
-                if choice_text == "check inventory":
-                    return "inventory"  # Stay in the inventory node until key press
                 
 
                 return next_node  # Return the next node key
@@ -286,15 +260,14 @@ while running:
         if not inventory_display:
             current_node = handle_input(current_node, event)
 
-            if current_node is not "inventory":
-                previous_node = current_node
-
-            if current_node == "inventory":
-                inventory_display = True  # Enter inventory mode
-                current_node = "inventory"
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_i:
+                    inventory_display = True  # Enter inventory mode
+                    previous_node = current_node
+        
 
         else:
-            # If in inventory, any key press returns to the last node
+            
             if event.type == pygame.KEYDOWN:
                 inventory_display = False  # Exit inventory mode
                 current_node = previous_node  # Go back to the previous node
@@ -310,8 +283,8 @@ while running:
         draw_story(current_node)
     else:
         # Draw the inventory
-        inventory_text = inventory()  # Get the inventory text
-        draw_inventory(inventory_text)  # Use the function to draw on the Pygame window
+        inventory_text = inventory()
+        draw_inventory(inventory_text)  
 
 
     # print(pygame.display.Info().current_w, pygame.display.Info().current_h)
