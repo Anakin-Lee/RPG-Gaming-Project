@@ -127,8 +127,7 @@ story_nodes = {
     "explore_room": StoryNode(
         "You find a mysterious key. What now?", 
         {"take key": "to_door", "leave key": "to_door"},
-        action=lambda state: state.addItem('key'),
-        actions={"take key": [found_key, special_message]}
+        actions={"take key": [found_key, lambda: player.addItem('key'),special_message]}
         
     ),
     "go_back_to_sleep": StoryNode(
@@ -289,7 +288,6 @@ while running:
 
     # print(pygame.display.Info().current_w, pygame.display.Info().current_h)
     
-    print(screen_width, screen_height)
 
     # Update the screen
     pygame.display.flip()
@@ -298,3 +296,8 @@ while running:
     clock.tick(30)
 
 pygame.quit()
+
+
+#Here lies the code that I don't want to delete because I might need it later graveyard
+
+#action=lambda state: state.addItem('key'),
