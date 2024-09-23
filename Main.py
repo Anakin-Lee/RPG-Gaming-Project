@@ -71,6 +71,72 @@ class Player:
 player = Player()
 ememy = None
 
+class Enemy:
+   
+    def __init__(self, health, baseAtk, mana, luck, skill, cooldown, name):
+        self.health = health
+        self.baseAtk = baseAtk
+        self.mana = mana
+        self.luck = luck
+        self.skill = skill
+        self.cooldown = 0
+        self.name = name
+
+    def attack(self):
+        print("Enemy used Basic Attack!!")
+        return self.baseAtk
+    
+    def skillAtk(self):
+        print("Enemy used special attack!!")
+        return self.skill
+    
+    def chooseAttack(self):
+        if self.cooldown == 0:
+            attackType = random.choice['normal', 'special']
+        else:
+            attackType = 'normal'
+
+        if attackType == 'special':
+            self.cooldown = 3
+            return self.attack()
+        else: 
+            return self.skillAtk()
+        
+    def spAtkCooldown(self):
+        if self.cooldown > 0:
+            self.cooldown -=1
+
+
+#Subclasses of the general Enemy Class: 
+
+class Gnome(Enemy):
+
+    #level one enemies
+    
+    def __init__(self):
+        super().__init__(health = 10, baseAtk = 1, mana = 2, skill = 3)
+
+    
+    def neighbor(self):
+        self.health = 10
+        baseAtk = 1
+        mana = 50
+        luck = 5
+        skill = None
+        self.name = "Tom (your spawn of the devil neighbor)"
+
+
+
+
+def randomEnemy1():
+    chooseEnemey = [Gnome, None, None]
+    currentEnemy = random.choice(chooseEnemey)
+    return currentEnemy
+
+
+
+
+    
 
 # Story Node class to hold story content, choices, and actions
 class StoryNode:
@@ -112,6 +178,9 @@ def inventory():
     else:
         return "Your inventory is empty."
 
+
+    
+
 # Function for drawing characters based on location
 def draw_characters():
     return
@@ -144,6 +213,9 @@ story_nodes = {
          {"continue": [lambda: print("Thank you for playing!")]},
         
     ),
+
+}
+battle_node = {
 
 }
 
@@ -204,6 +276,7 @@ def draw_story(node):
     # Render the main story text
     story_text = font.render(story_nodes[node].text, True, WHITE)
     screen.blit(story_text, (adjust_w(10), adjust_h(310)))
+    
     
     # Render choices
     choices = story_nodes[node].choices
@@ -301,3 +374,10 @@ pygame.quit()
 #Here lies the code that I don't want to delete because I might need it later graveyard
 
 #action=lambda state: state.addItem('key'),
+
+
+#Here is the graveyard for code I want to use later but am not there just yet
+# missChance = random.random()
+# if missChance <= player.luck/100:
+#     print("your attack missed!")
+    
