@@ -1,0 +1,46 @@
+{
+    "default_theme": {
+      "font_paths": [
+        {
+          "name": "fira_sans",
+          "path": "fonts/FiraSans-Regular.ttf"
+        }
+      ],
+      "font_info": {
+        "default": {
+          "name": "fira_sans",
+          "size": 16,
+          "bold": false,
+          "italic": false
+        }
+      },
+      "colours": {
+        "normal_text": "#FFFFFF",
+        "dark_bg": "#333333",
+        "light_bg": "#DDDDDD"
+      },
+      "text_entry": {
+        "font": "default",
+        "font_size": 16,
+        "colours": {
+          "normal_text": "#000000",
+          "focus_text": "#FF0000",
+          "background_colour": "#FFFFFF",
+          "border_colour": "#000000"
+        }
+      },
+      "button": {
+        "font": "default",
+        "font_size": 16,
+        "colours": {
+          "normal_text": "#FFFFFF",
+          "hovered_text": "#FFFF00",
+          "disabled_text": "#999999",
+          "normal_bg": "#666666",
+          "hovered_bg": "#888888",
+          "disabled_bg": "#444444"
+        }
+      }
+    }
+  }
+  
