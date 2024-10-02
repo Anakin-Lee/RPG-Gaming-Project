@@ -19,14 +19,14 @@ width = 720
 height = 480
 default_font = pygame.font.Font(None, 48)
 
-MANAGER = pygame_gui.UIManager((width, height), 'Font.json')
+# MANAGER = pygame_gui.UIManager((width, height), 'Font.json')
 
 
-def name_input():
-    global TEXT_INPUT
-    TEXT_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=  pygame.Rect((50, 50), (200, 50)),
-                                                       manager = MANAGER, object_id = "main_text_entry")
-    print("Input field created")
+# def name_input():
+#     global TEXT_INPUT
+#     TEXT_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=  pygame.Rect((50, 50), (200, 50)),
+#                                                        manager = MANAGER, object_id = "main_text_entry")
+#     print("Input field created")
     
 
 def show_text(text_to_show):  
@@ -37,7 +37,11 @@ def show_text(text_to_show):
     pygame.time.delay(2000)  # Wait for 2 seconds to allow the player to read
 
 
+def start_menu():
+    # This menu should be displayed at the start of the game and at the end. 
 
+    # it'll display the start menu with the options to start the game or quit the game
+    return
         
        
 
@@ -45,16 +49,16 @@ def show_text(text_to_show):
 
 
 class Player:
+
     name = "Nobody"
     health = 0 
     baseAtk = 0
     mana = 0
     luck = 10
-    skill = None
+    skills = None
    
-
     def __init__(self):
-         self.invent = []
+        self.invent = []
     
     def inventory(self):
         return self.invent
@@ -109,7 +113,8 @@ class Player:
 
 
 player = Player()
-ememy = None
+
+ememy1 = None
 
 class Enemy:
    
@@ -156,11 +161,6 @@ class Gnome(Enemy):
 class Rat(Enemy):
     def __init__(self):
         super().__init__(health = 5, baseAtk= 1, mana = 0, skill = None)
-
-
-    
-
-
 
 
 def neighbor(self):
@@ -223,6 +223,15 @@ def battle(player, enemy):
 
 
     # return "battle_ended"  # Return to the appropriate story node when the battle is over
+
+def draw_battle():
+
+
+
+
+
+
+    return
 
 def player_turn():
     # Display choices for the player (e.g., Attack, Use Skill)
@@ -288,7 +297,9 @@ def inventory():
     else:
         return "Your inventory is empty."
 
-
+def set_battle_mode(temp):
+    global battle_mode
+    battle_mode = temp
     
 
 # Function for drawing characters based on location
@@ -309,9 +320,9 @@ def choose_story(input):
 story_nodes = {
 
     "start": StoryNode(
-        "Thank you for choosing your name",
+        "Welcome to the game! Press any key to start.",
         {"": "main_menu"}, 
-        actions={"": [name_input]},
+        actions={},
     ),
 
     "main_menu": StoryNode(
@@ -345,19 +356,66 @@ story_nodes = {
 lost_throne_nodes = {
 
     "begin_story": StoryNode(
-        "you enter a battle with a rat!", 
+        "You wake up in a dark room. You have no idea how you got here. You see a door in front of you. What do you do?", 
+        {"Open the door": "door", "Go back to sleep": "sleep"}, 
+        actions={},
+    ),
+    "sleep": StoryNode(
+        "You are sleeping", 
+        {"Wake up": "begin_story"}, 
+        actions={},
+    ),
+    "door": StoryNode(
+        "You open the door and see a fugly rat. What do you do?", 
+        {"Attack the rat": "attacked_beginning_rat", "Cower": "sleep"}, 
+        actions={"Attack the rat": [lambda: set_battle_mode(True), ]},
+    ),
+    "attacked_beginning_rat": StoryNode(
+        "The rat lies dead on the floor. You see baby rats with big wide eyes crying. What do you do?", 
+        {"Suicide": "sleep"}, 
+        actions={},
+    ),
+    "": StoryNode(
+        "", 
+        {}, 
+        actions={},
+    ),
+    "rat": StoryNode(
+        "", 
         {}, 
         actions={"": [lambda: battle(player, Rat())]},
     ),
-    "quit": StoryNode(
+    "": StoryNode(
         "", 
         {}, 
         actions={},
-    ),"quit": StoryNode(
+    ),
+    "": StoryNode(
         "", 
         {}, 
         actions={},
-    ),"quit": StoryNode(
+    ),
+    "": StoryNode(
+        "", 
+        {}, 
+        actions={},
+    ),
+    "": StoryNode(
+        "", 
+        {}, 
+        actions={},
+    ),
+    "": StoryNode(
+        "", 
+        {}, 
+        actions={},
+    ),
+    "": StoryNode(
+        "", 
+        {}, 
+        actions={},
+    ),
+    "": StoryNode(
         "", 
         {}, 
         actions={},
@@ -449,7 +507,7 @@ def wrap_text(text, font, max_width):
     return wrapped_lines
 
 # Initial story state
-current_node = "start"
+current_node = "main_menu"
 
 # Function to draw the current story node
 def draw_story(node):
@@ -478,22 +536,15 @@ def draw_story(node):
         screen.blit(choice_surface, (adjust_w(10), y_offset))
         y_offset += adjust_h(30)  # Move down for the next choice
 
-    if node == "start":
-        TEXT_INPUT.show()
-        print("showing text")
-    # else:
-    #     TEXT_INPUT.hide()
-    #     print("hiding text")
+    # if node == "main_menu":
+    #     if not welcome_message_displayed:
+    #         show_text("Welcome to the game, " + player.name + "!")  # Display the player's name
+    #         welcome_message_displayed = True  # Set flag to indicate message is shown
+    #         welcome_message_timer = pygame.time.get_ticks()  # Start the timer
 
-    if node == "main_menu":
-        if not welcome_message_displayed:
-            show_text("Welcome to the game, " + player.name + "!")  # Display the player's name
-            welcome_message_displayed = True  # Set flag to indicate message is shown
-            welcome_message_timer = pygame.time.get_ticks()  # Start the timer
-
-    # Check if welcome message duration has passed
-    if welcome_message_displayed and (pygame.time.get_ticks() - welcome_message_timer > welcome_message_duration):
-        welcome_message_displayed = False  # Reset flag
+    # # Check if welcome message duration has passed
+    # if welcome_message_displayed and (pygame.time.get_ticks() - welcome_message_timer > welcome_message_duration):
+    #     welcome_message_displayed = False  # Reset flag
 
 
 def draw_inventory(inventory_text):
@@ -517,9 +568,9 @@ def handle_input(node, event):
                 choice_text = choices[choice_index][0]
                 next_node = choices[choice_index][1]
 
-                if node == "rat":  # Check if this is the battle node
-                    battle(player, Rat())  # Start a battle with a Rat
-                    return next_node
+                # if node == "rat":  # Check if this is the battle node
+                #     battle(player, Rat())  # Start a battle with a Rat
+                #     return next_node
                 
                 # Execute the actions associated with the choice, if any
                 if choice_text in story_nodes[node].actions:
@@ -535,75 +586,60 @@ def handle_input(node, event):
     return node  # Return the current node if no valid input
 
 
-
-player_name = input("Enter your name: ")
-player.setName(player_name)
+player.setName("player_name")
 
 
 # Main game loop
 running = True
 inventory_display = False
+paused = False
+start_menu_mode = False
 previous_node = current_node
-name_input()
-current_node = "start"
 
 while running:
     Refresh_rate = clock.tick(FPS) / 1000.0
+    # screen.fill((0, 0, 0)) 
+    updateDimensions()
+
     for event in pygame.event.get():
+        # Check if the player wants to quit
         if event.type == pygame.QUIT:
             running = False
         
-        MANAGER.process_events(event)
-        
-
-        if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "main_text_entry":
-            player.setName(TEXT_INPUT.text)  # Set the player's name
-            current_node = "main_menu"  # Move to the main menu after entering the name
-            TEXT_INPUT.set_text('')  # Clear the input field
-            TEXT_INPUT.hide()  # Hide the input field after name is set
-        
-        if battle_mode:
-            # Skip handling story nodes and focus on battle updates instead
+        # Handles start menu events
+        if start_menu_mode:
+            start_menu()
             continue
 
-        # Handle the current node's input
-        if not inventory_display:
-            current_node = handle_input(current_node, event)
+        # Handles paused events
+        elif paused:
+            continue
 
+        # Handles battle_mode events
+        elif battle_mode:
+            print("Battle mode")
+            draw_battle()
+            # battle(player, enemy)
+ 
+        elif inventory_display:
+            if event.type == pygame.KEYDOWN:
+                inventory_display = False
+            
+            # Draw the inventory
+            inventory_text = inventory()
+            draw_inventory(inventory_text)  
+
+        # Handles general events 
+        else:
+            current_node = handle_input(current_node, event)
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_i:
-                    inventory_display = True  # Enter inventory mode
-                    previous_node = current_node
-        
-        else:
-            if event.type == pygame.KEYDOWN:
-                inventory_display = False  # Exit inventory mode
-                current_node = previous_node  # Go back to the previous node
-
-        if current_node is None:
-            running = False
-
-
-
-    MANAGER.update(Refresh_rate)
-    screen.fill((0, 0, 0))
-    MANAGER.draw_ui(screen)   
-    updateDimensions()
-
-    if not inventory_display:
-        if battle_mode:
-            # Display the battle log during battle mode
-            display_battle_log(screen, font, battle_log, player, Rat())
-        else:
-            # Draw the current story and choices
-            draw_story(current_node)
-    else:
-        # Draw the inventory
-        inventory_text = inventory()
-        draw_inventory(inventory_text)  
-
-    # print(pygame.display.Info().current_w, pygame.display.Info().current_h)
+                    inventory_display = True
     
+            if current_node is None:
+                running = False
+
+            draw_story(current_node)
 
     # Update the screen
     pygame.display.flip()
