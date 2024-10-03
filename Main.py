@@ -554,6 +554,7 @@ def draw_story(node):
     screen.fill(GREY)
 
     draw_characters()
+    display_classes()
 
     pygame.draw.rect(screen, BLACK, [0, adjust_h(250), screen_width, adjust_h(230)])
     
@@ -633,7 +634,7 @@ player.setName("player_name")
 
 
 # Load the image and set a color key to make the background transparent (optional)
-sprite_w = pygame.image.load('Wizard.png').convert_alpha()  # Use convert_alpha() for images with transparency
+sprite_w = pygame.image.load('img/Wizard.png').convert_alpha()  # Use convert_alpha() for images with transparency
 
 
 
@@ -654,8 +655,24 @@ class Sprite (pygame.sprite.Sprite):
         return
     
 all_sprites = pygame.sprite.Group()  # Create a group to hold all sprites
-sprite = Sprite(100, 100)  # Create an instance of your player sprite
-all_sprites.add(sprite)  # Add the player to the group
+# sprite = Sprite(100, 100)  # Create an instance of your player sprite
+# all_sprites.add(sprite)  # Add the player to the group
+display_classes = False
+def display_classes():
+    wizard_img = pygame.image.load('img/Wizard.png')
+    # knight_img = pygame.image.load('img/Knight.png')
+    # archer_img = pygame.image.load('img/Archer.png')
+    # unfortunate_img = pygame.image.load('img/Unfortunate.png')
+
+    wizard_img = pygame.transform.scale(wizard_img, (200, 200))
+    # knight_img = pygame.transform.scale(knight_img, (200, 200))
+    # archer_img = pygame.transform.scale(archer_img, (200, 200))
+    # unfortunate_img = pygame.transform.scale(unfortunate_img, (200, 200))
+
+    screen.blit(wizard_img, (30, 50))
+    # screen.blit(knight_img, (130, 50))
+    # screen.blit(archer_img, (230, 50))
+    # screen.blit(unfortunate_img, (430, 50))
 
 
 # Main game loop
