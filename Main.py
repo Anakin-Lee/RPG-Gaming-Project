@@ -18,6 +18,8 @@ TEXT_INPUT = None
 width = 720
 height = 480
 default_font = pygame.font.Font(None, 48)
+small_font = pygame.font.Font(None, 36)
+mini_font = pygame.font.Font(None, 20)
 
 # MANAGER = pygame_gui.UIManager((width, height), 'Font.json')
 
@@ -43,11 +45,6 @@ def start_menu():
     # it'll display the start menu with the options to start the game or quit the game
     return
         
-       
-
-
-
-
 class Player:
 
     name = "Nobody"
@@ -55,7 +52,7 @@ class Player:
     baseAtk = 0
     mana = 0
     luck = 10
-    skills = None
+    special_atk = 8
    
     def __init__(self):
         self.invent = []
@@ -118,7 +115,7 @@ ememy1 = None
 
 class Enemy:
    
-    def __init__(self, health, baseAtk, mana, mana_cost, luck, skill, cooldown, name):
+    def __init__(self, health, baseAtk, mana, mana_cost = 2, luck = 0, skill = 0, name = "Enemy"):
         self.health = health
         self.baseAtk = baseAtk
         self.mana = mana
@@ -142,7 +139,7 @@ class Enemy:
         else:
             attackType = 'normal'
 
-        if attackType == 'special':
+        if attackType == 'normal':
             self.cooldown = 3
             return self.attack()
         else: 
@@ -152,6 +149,11 @@ class Enemy:
         if self.cooldown > 0:
             self.cooldown -=1
 
+def generate_random_enemy():
+    enemy = random.choice([Gnome(), Rat()])
+    return enemy
+
+
 
 #Subclasses of the general Enemy Class: 
 #level one enemies
@@ -160,7 +162,8 @@ class Gnome(Enemy):
         super().__init__(health = 10, baseAtk = 1, mana = 2, mana_cost=1, skill = 3)
 class Rat(Enemy):
     def __init__(self):
-        super().__init__(health = 5, baseAtk= 1, mana = 0, skill = None)
+        super().__init__(health = 500, baseAtk= 1, mana = 0, skill = 2)
+
 
 
 def neighbor(self):
@@ -171,11 +174,14 @@ def neighbor(self):
     skill = None
     self.name = "Tom (your spawn of the devil neighbor)"
 
-
 def randomEnemy1():
     chooseEnemey = [Gnome, Rat, None]
     currentEnemy = random.choice(chooseEnemey)
     return currentEnemy
+
+def set_enemy1(enemy):
+    global enemy1
+    enemy1 = enemy
 
 battle_mode = False  # Initially false, will switch to True during battles
 battle_log = [] 
@@ -219,13 +225,12 @@ def battle(player, enemy):
             battle_over = True
             battle_log.append(f"{enemy.name} has been defeated!")
 
-        
-
-
     # return "battle_ended"  # Return to the appropriate story node when the battle is over
 
 def draw_battle():
+    display_battle_log(screen, font, battle_log, player, enemy1)
 
+    # Display the battle log and player/enemy health
 
 
 
@@ -246,17 +251,36 @@ def display_battle_log(screen, font, log, player, enemy):
     player_health_text = font.render(f"Player Health: {player.health}", True, (255, 255, 255))
     enemy_health_text = font.render(f"Enemy Health: {enemy.health}", True, (255, 255, 255))
     
-    screen.blit(player_health_text, (50, 20))
-    screen.blit(enemy_health_text, (50, 50))
+    screen.blit(player_health_text, (adjust_w(20), adjust_h(20)))
+    screen.blit(enemy_health_text, (adjust_w(500), adjust_h(20)))
+
+    # Creates the black box for options and battle log
+    pygame.draw.rect(screen, BLACK, [0, adjust_h(250), screen_width, adjust_h(230)])
+    # pygame.draw.rect(screen, BLACK, [0, adjust_h(250), screen_width / 4, adjust_h(60)])
+    # pygame.draw.rect(screen, BLACK, [screen_width / 4, adjust_h(250), screen_width / 4, adjust_h(60)])
+    # pygame.draw.rect(screen, BLACK, [screen_width / 2, adjust_h(250), screen_width / 4, adjust_h(60)])
+    # pygame.draw.rect(screen, BLACK, [screen_width * 3 / 4, adjust_h(250), screen_width / 4, adjust_h(60)])
     
+    # Outlines the options
+    pygame.draw.line(screen, WHITE, (0, adjust_h(250)), (screen_width, adjust_h(250)), 5)
+    pygame.draw.line(screen, WHITE, (0, adjust_h(310)), (screen_width, adjust_h(310)), 5)
+    pygame.draw.line(screen, WHITE, (screen_width / 4, adjust_h(250)), (screen_width / 4, adjust_h(310)), 5)
+    pygame.draw.line(screen, WHITE, (screen_width / 2, adjust_h(250)), (screen_width / 2, adjust_h(310)), 5)    
+    pygame.draw.line(screen, WHITE, (screen_width * 3 / 4, adjust_h(250)), (screen_width * 3 / 4, adjust_h(310)), 5)
+    
+    screen.blit(small_font.render("1. Basic Attack", True, WHITE), (adjust_w(5), adjust_h(270)))
+    screen.blit(small_font.render("2. Spc Attack", True, WHITE), (screen_width / 4 + adjust_w(5), adjust_h(270)))
+    screen.blit(small_font.render("3. Inventory", True, WHITE), (screen_width / 2 + adjust_w(5), adjust_h(270)))
+    screen.blit(small_font.render("4. Run", True, WHITE), (screen_width * 3 / 4 + adjust_w(5), adjust_h(270)))
+
+    
+
     # Display the last few battle log entries
-    y_offset = 100
+    y_offset = adjust_h(330)
     for message in log[-5:]:  # Show the last 5 battle log entries
-        text_surface = font.render(message, True, (255, 255, 255))
-        screen.blit(text_surface, (50, y_offset))
-        y_offset += 30
-
-
+        text_surface = mini_font.render(message, True, (WHITE))
+        screen.blit(text_surface, (adjust_w(20), y_offset))
+        y_offset += adjust_h(20)  # Move down for the next line
 
 
 # Story Node class to hold story content, choices, and actions
@@ -305,6 +329,9 @@ def set_battle_mode(temp):
     
 
 # Function for drawing characters based on location
+
+
+
 def draw_characters():
     return
 
@@ -370,7 +397,7 @@ lost_throne_nodes = {
     "door": StoryNode(
         "You open the door and see a fugly rat. What do you do?", 
         {"Attack the rat": "attacked_beginning_rat", "Go back to sleep": "tutor"}, 
-        actions={"Attack the rat": [lambda: set_battle_mode(True), ]},
+        actions={"Attack the rat": [lambda: set_battle_mode(True), lambda: set_enemy1(Rat())]},
     ),
     "attacked_beginning_rat": StoryNode(
         "The rat lies dead on the floor. You see baby rats with big wide eyes crying. What do you do?", 
@@ -460,7 +487,7 @@ screen_height = 480
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE, pygame.SCALED)
 pygame.display.set_caption("Dead End Adventurer")
 
-def updateDimensions():
+def update_dimensions():
     global screen_width 
     screen_width = pygame.display.Info().current_w
 
@@ -571,6 +598,8 @@ def draw_inventory(inventory_text):
 
 # Function to handle user input
 def handle_input(node, event):
+    global previous_node
+
     choices = list(story_nodes[node].choices.items())
 
     if event.type == pygame.KEYDOWN:
@@ -593,6 +622,8 @@ def handle_input(node, event):
                 story_nodes[node].exe_action(player)
                 story_nodes[next_node].exe_action(player)
                 
+                # Keeps the previous node for recovery use
+                previous_node = node
 
                 return next_node  # Return the next node key
     return node  # Return the current node if no valid input
@@ -631,13 +662,14 @@ all_sprites.add(sprite)  # Add the player to the group
 running = True
 inventory_display = False
 paused = False
+died = False
 start_menu_mode = False
 previous_node = current_node
 
 while running:
     Refresh_rate = clock.tick(FPS) / 1000.0
     # screen.fill((0, 0, 0)) 
-    updateDimensions()
+    update_dimensions()
 
     for event in pygame.event.get():
         # Check if the player wants to quit
@@ -653,20 +685,76 @@ while running:
         elif paused:
             continue
 
+        elif died:
+            pygame.draw.rect(screen, GREY, [screen_width / 4, screen_height / 4, screen_width / 2 , screen_height / 2])
+            text_surface = font.render("You have died!", True, WHITE)
+            screen.blit(text_surface, (screen_width / 4 + 10, screen_height / 4 + 10))
+            screen.blit(small_font.render("1. Respawn", True, WHITE), (screen_width / 4 + 10, screen_height / 4 + 50))
+            screen.blit(small_font.render("2. Main Menu", True, WHITE), (screen_width / 4 + 10, screen_height / 4 + 80))
+            pygame.display.flip()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    died = False
+                    current_node = previous_node
+                    player.health = 10
+                    enemy1 = None
+                if event.key == pygame.K_2:
+                    current_node = "main_menu"
+            #pygame.time.delay(2000)
+
+        elif inventory_display:
+                    if event.type == pygame.KEYDOWN:
+                        inventory_display = False
+                    
+                    # Draw the inventory
+                    inventory_text = inventory()
+                    draw_inventory(inventory_text) 
+
+
         # Handles battle_mode events
         elif battle_mode:
-            all_sprites.draw(screen)
-            print("Battle mode")
             draw_battle()
-            # battle(player, enemy)
- 
-        elif inventory_display:
             if event.type == pygame.KEYDOWN:
-                inventory_display = False
-            
-            # Draw the inventory
-            inventory_text = inventory()
-            draw_inventory(inventory_text)  
+                if event.key == pygame.K_1:
+                    enemy1.health -= player.baseAtk
+                    battle_log.append(f"{player.name} attacked {enemy1.name} for {player.baseAtk} damage!")
+
+                    enemy_attack = enemy1.chooseAttack()
+                    player.health -= enemy_attack
+                    battle_log.append(f"{enemy1.name} attacked {player.name} for {enemy_attack} damage!")
+
+                elif event.key == pygame.K_2:
+                    enemy1.health -= player.special_atk
+                    battle_log.append(f"{player.name} used special attack on {enemy1.name} for {player.special_atk} damage!")
+                    enemy_attack = enemy1.chooseAttack()
+                    player.health -= enemy_attack
+                    battle_log.append(f"{enemy1.name} attacked {player.name} for {enemy1.chooseAttack()} damage!")
+
+                elif event.key == pygame.K_3:
+                    inventory_display = True
+
+                elif event.key == pygame.K_4:
+
+                    battle_mode = False
+                elif event.key == pygame.K_i:
+                    inventory_display = True
+            if enemy1.health <= 0:
+                battle_mode = False
+                battle_log.append(f"{enemy1.name} has been defeated!")
+                battle_log.append("You have won the battle!")
+                battle_log.append("You have gained 10 experience points!")
+                battle_log.append("You have gained 5 gold!")
+                battle_log = []
+                enemy1 = None
+            if player.health <= 0:
+                battle_mode = False
+                battle_log.append(f"{player.name} has been defeated!")
+                battle_log.append("You have lost the battle!")
+                battle_log.append("You have lost 5 gold!")
+                battle_log = []
+                enemy1 = None
+                died = True
+            # battle(player, enemy) 
 
         # Handles general events 
         else:
