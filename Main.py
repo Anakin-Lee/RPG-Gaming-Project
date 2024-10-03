@@ -2,6 +2,7 @@ import pygame
 import pygame_gui
 import sys
 import random
+import os
 
 from pygame_gui.elements import UITextEntryLine
 
@@ -21,20 +22,23 @@ default_font = pygame.font.Font(None, 48)
 small_font = pygame.font.Font(None, 36)
 mini_font = pygame.font.Font(None, 20)
 
-# MANAGER = pygame_gui.UIManager((width, height), 'Font.json')
 
 
-# def name_input():
-#     global TEXT_INPUT
-#     TEXT_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=  pygame.Rect((50, 50), (200, 50)),
-#                                                        manager = MANAGER, object_id = "main_text_entry")
-#     print("Input field created")
-def draw_battle():
-    display_battle_log(screen, font, battle_log, player, enemy1)
+# Define the path to the 'img' folder
+img_folder = 'img'
 
-     # Display the battle log and player/enemy health
-    return    
+# Create an empty dictionary to store the images
+image_dict = {}
 
+# Loop through all files in the 'img' folder
+for filename in os.listdir(img_folder):
+    if filename.endswith('.png') or filename.endswith('.jpg'):  # Add other image extensions if needed
+        # Load the image and store it in the dictionary
+        # Use filename without the extension as the key
+        key = os.path.splitext(filename)[0]
+        image_path = os.path.join(img_folder, filename)
+        image_dict[key] = pygame.image.load(image_path)
+    
 def show_text(text_to_show):  
     screen.fill("white")  # Clear the screen
     text_surface = font.render(text_to_show, True, BLACK)  # Render the text
@@ -451,7 +455,7 @@ tournament_nodes = {
 # Screen dimensions
 screen_width = 720
 screen_height = 480
-screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE, pygame.SCALED)
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 pygame.display.set_caption("Dead End Adventurer")
 
 def update_dimensions():
@@ -596,6 +600,11 @@ def handle_input(node, event):
                 return next_node  # Return the next node key
     return node  # Return the current node if no valid input
 
+def draw_battle():
+    display_battle_log(screen, font, battle_log, player, enemy1)
+
+     # Display the battle log and player/enemy health
+    return    
 
 player.setName("player_name")
 
@@ -626,21 +635,22 @@ all_sprites = pygame.sprite.Group()  # Create a group to hold all sprites
 # all_sprites.add(sprite)  # Add the player to the group
 display_classes = False
 def display_classes():
-    wizard_img = pygame.image.load('img/Wizard.png')
-    # knight_img = pygame.image.load('img/Knight.png')
+    wizard_img = image_dict['brad']
+    # knight_img = image_dict['knight']
     # archer_img = pygame.image.load('img/Archer.png')
-    # unfortunate_img = pygame.image.load('img/Unfortunate.png')
+    # unfortunate_img = image_dict['stinky']
 
-    wizard_img = pygame.transform.scale(wizard_img, (200, 200))
-    # knight_img = pygame.transform.scale(knight_img, (200, 200))
+    wizard_img = pygame.transform.scale(wizard_img, (adjust_w(150), adjust_h(225)))
+    # knight_img = pygame.transform.scale(knight_img, (adjust_w(150), adjust_h(225)))
     # archer_img = pygame.transform.scale(archer_img, (200, 200))
-    # unfortunate_img = pygame.transform.scale(unfortunate_img, (200, 200))
+    # unfortunate_img = pygame.transform.scale(unfortunate_img, (adjust_w(150), adjust_h(225)))
 
-    screen.blit(wizard_img, (30, 50))
-    # screen.blit(knight_img, (130, 50))
+    screen.blit(wizard_img, (adjust_w(30), adjust_h(30)))
+    # screen.blit(knight_img, (adjust_w(200), adjust_h(30)))
     # screen.blit(archer_img, (230, 50))
-    # screen.blit(unfortunate_img, (430, 50))
+    # screen.blit(unfortunate_img, (adjust_w(300), adjust_h(30)))
 
+# def 
 
 # Main game loop
 running = True
@@ -649,6 +659,8 @@ paused = False
 died = False
 start_menu_mode = False
 previous_node = current_node
+
+chat_bubbles = []
 
 while running:
     Refresh_rate = clock.tick(FPS) / 1000.0
