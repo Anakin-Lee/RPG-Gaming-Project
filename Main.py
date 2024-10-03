@@ -367,40 +367,49 @@ lost_throne_nodes = {
     ),
     "door": StoryNode(
         "You open the door and see a fugly rat. What do you do?", 
-        {"Attack the rat": "attacked_beginning_rat", "Cower": "sleep"}, 
+        {"Attack the rat": "attacked_beginning_rat", "Go back to sleep": "tutor"}, 
         actions={"Attack the rat": [lambda: set_battle_mode(True), ]},
     ),
     "attacked_beginning_rat": StoryNode(
         "The rat lies dead on the floor. You see baby rats with big wide eyes crying. What do you do?", 
-        {"Suicide": "sleep"}, 
+        {"Suicide": "beginning"}, 
         actions={},
     ),
-    "": StoryNode(
-        "", 
-        {}, 
+     "tutor": StoryNode(
+        "This is a remainder! There will be some scenes with only dispostion and story. These scenes will not have an option to select. To continue to the next"
+        " scene, click the 1 key! Have fun playing our game :)", 
+        {"": "beginning"}, 
         actions={},
     ),
-    "rat": StoryNode(
-        "", 
-        {}, 
-        actions={"": [lambda: battle(player, Rat())]},
-    ),
-    "": StoryNode(
-        "", 
-        {}, 
+    "beginning": StoryNode(
+        "Sleep encumbers your body as you begin to fall deep into slumber. Night upon night, you see the same vision in"
+        "your dreams. The king, your father, being brutally stabbed again and again. You watch in horror before you get"
+        "get pulled awayn by a mysterious figure and rushed out of the castle's walls.", 
+        {"" : "WakeDream"}, 
         actions={},
     ),
-    "": StoryNode(
-        "", 
-        {}, 
+    "WakeDream": StoryNode(
+        "You awake from your dream with sweat dripping down your forehead, however this time you feel your eyes begin"
+        "to tear up as the memory of your father fade away. Around you is a room surrounded by wood walls beginning to rot"
+        "This is the room you have grown up in from an early age every since that fateful night", 
+        {"" : "roomBack"}, 
         actions={},
     ),
-    "": StoryNode(
-        "", 
-        {}, 
+    "roomBack": StoryNode(
+        "Countess Adala owns this rundown shack. She is the person who saved you from that young age of 10 . She took you"
+        "in as her own kin and has raised you all this time. On your 17th birthday Adala finally told you what happend"
+         "to your father and the kingdom. The kingdom that is rightfully yours as you are the heir to the king.", 
+        {"" : "finalExpo"}, 
         actions={},
     ),
-    "": StoryNode(
+    "finalExpo": StoryNode(
+        "An image replays in your head as you recall your 17th birthday. Adala sitting you down telling you how the throne"
+        "is falsely claimed. That your father was killed and replaced and it is your right to take it back and save the kingdom."
+        "Your Kingdom. Adala tells you that she supports whatever choice you make but will support you if you choose a path of revenge", 
+        {"" : "throneBegin"}, 
+        actions={},
+    ),
+    "throneBegin": StoryNode(
         "", 
         {}, 
         actions={},
@@ -477,6 +486,7 @@ choice_font = pygame.font.Font(None, 28)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
+LGREY = (230, 230, 230)
 
 # Set the frame rate
 clock = pygame.time.Clock()
@@ -523,7 +533,7 @@ def draw_story(node):
     y_offset = adjust_h(260)
     
     for line in story_text_lines:
-        story_surface = font.render(line, True, WHITE)
+        story_surface = font.render(line, True, LGREY)
         screen.blit(story_surface, (adjust_w(10), y_offset))
         y_offset += adjust_h(30)    
 
