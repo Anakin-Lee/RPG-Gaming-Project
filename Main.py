@@ -29,7 +29,11 @@ mini_font = pygame.font.Font(None, 20)
 #     TEXT_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=  pygame.Rect((50, 50), (200, 50)),
 #                                                        manager = MANAGER, object_id = "main_text_entry")
 #     print("Input field created")
-    
+def draw_battle():
+    display_battle_log(screen, font, battle_log, player, enemy1)
+
+     # Display the battle log and player/enemy health
+    return    
 
 def show_text(text_to_show):  
     screen.fill("white")  # Clear the screen
@@ -52,10 +56,16 @@ class Player:
     baseAtk = 0
     mana = 0
     luck = 10
-    special_atk = 8
+    special_atk = 0
+    spec_cost = 0
+    cooldown = 0
    
     def __init__(self):
         self.invent = []
+
+    def spAtkCooldown(self):
+        if self.cooldown > 0:
+            self.cooldown -=1
     
     def inventory(self):
         return self.invent
@@ -79,6 +89,8 @@ class Player:
         self.health = 8
         self.baseAtk = 3
         self.mana = 10
+        self.spec_cost = 5
+        self.special_atk = 5
         sound_effect = pygame.mixer.Sound('Voices/Mage1.wav')
         sound_effect.play()
         #print you have selected mage
@@ -87,6 +99,8 @@ class Player:
         self.health = 12
         self.baseAtk = 5
         self.mana = 5
+        self.special_atk = 5
+        self.spec_cost = 2
         sound_effect = pygame.mixer.Sound('Voices/Knight1.wav')
         sound_effect.play()
         #print in animation you have selected knight
@@ -95,6 +109,8 @@ class Player:
         self.health = 10
         self.baseAtk = 4
         self.mana = 7
+        self.special_atk = 5
+        self.spec_cost = 2
         sound_effect = pygame.mixer.Sound('Voices/Archer1.wav')
         sound_effect.play()
         #print in animation you have selected archer
@@ -104,6 +120,8 @@ class Player:
         self.baseAtk = 1
         self.mana = 20
         self.luck = 30
+        self.special_atk = 5
+        self.spec_cost = 2
         sound_effect = pygame.mixer.Sound('Voices/Unfortunate1.wav')
         sound_effect.play()
         #print in animation you have selected unfortunate
@@ -140,9 +158,9 @@ class Enemy:
             attackType = 'normal'
 
         if attackType == 'normal':
-            self.cooldown = 3
             return self.attack()
         else: 
+            self.cooldown = 3
             return self.skillAtk()
         
     def spAtkCooldown(self):
@@ -162,7 +180,7 @@ class Gnome(Enemy):
         super().__init__(health = 10, baseAtk = 1, mana = 2, mana_cost=1, skill = 3)
 class Rat(Enemy):
     def __init__(self):
-        super().__init__(health = 500, baseAtk= 1, mana = 0, skill = 2)
+        super().__init__(health = 500, baseAtk= 1, mana = 3,mana_cost=1, skill = 2)
 
 
 
@@ -186,57 +204,6 @@ def set_enemy1(enemy):
 battle_mode = False  # Initially false, will switch to True during battles
 battle_log = [] 
 
-def battle(player, enemy):
-    global battle_mode
-    battle_mode = True  # Switch to battle mode when the battle starts
-    battle_over = False
-    battle_turn = 'Player'
-    battle_log.clear()  # Clear the battle log before starting
-    
-    while not battle_over:
-        if battle_turn == 'Player':
-            # Player's turn: choose an action
-            battle_log.append(f"{player.name}'s turn!")
-            # Display attack options and let the player choose
-            player_action = player_turn()  # Function that handles player input (attack, skill, etc.)
-            
-            if player_action == 'attack':
-                damage = player.baseAtk  # Player's base attack damage
-                enemy.health -= damage
-                battle_log.append(f"{player.name} attacked {enemy.name} for {damage} damage!")
-            # Add other actions like skills or items here
-            
-            battle_turn = 'Enemy'  # Switch turn after player action
-            
-        elif battle_turn == 'Enemy':
-            # Enemy's turn: choose an attack
-            battle_log.append(f"{enemy.name}'s turn!")
-            damage = enemy.attack()  # Enemy's basic attack
-            player.health -= damage
-            battle_log.append(f"{enemy.name} attacked {player.name} for {damage} damage!")
-            
-            battle_turn = 'Player'  # Switch turn after enemy action
-        
-        # Check if battle is over
-        if player.health <= 0:
-            battle_over = True
-            battle_log.append(f"{player.name} has been defeated!")
-        elif enemy.health <= 0:
-            battle_over = True
-            battle_log.append(f"{enemy.name} has been defeated!")
-
-    # return "battle_ended"  # Return to the appropriate story node when the battle is over
-
-def draw_battle():
-    display_battle_log(screen, font, battle_log, player, enemy1)
-
-    # Display the battle log and player/enemy health
-
-
-
-
-
-    return
 
 def player_turn():
     # Display choices for the player (e.g., Attack, Use Skill)
@@ -739,14 +706,23 @@ while running:
                     enemy_attack = enemy1.chooseAttack()
                     player.health -= enemy_attack
                     battle_log.append(f"{enemy1.name} attacked {player.name} for {enemy_attack} damage!")
+                    player.spAtkCooldown()
 
+                
                 elif event.key == pygame.K_2:
-                    enemy1.health -= player.special_atk
-                    battle_log.append(f"{player.name} used special attack on {enemy1.name} for {player.special_atk} damage!")
-                    enemy_attack = enemy1.chooseAttack()
-                    player.health -= enemy_attack
-                    battle_log.append(f"{enemy1.name} attacked {player.name} for {enemy1.chooseAttack()} damage!")
-
+                    if player.cooldown == 0 and player.spec_cost <= player.mana:
+                        player.cooldown = 4
+                        enemy1.health -= player.special_atk
+                        battle_log.append(f"{player.name} used special attack on {enemy1.name} for {player.special_atk} damage!")
+                        enemy_attack = enemy1.chooseAttack()
+                        player.health -= enemy_attack
+                        battle_log.append(f"{enemy1.name} attacked {player.name} for {enemy1.chooseAttack()} damage!")
+                    else :
+                        if player.cooldown > 0:
+                            battle_log.append(f"{player.name}'s skill is on cooldown for {player.cooldown} turns")
+                        if player.spec_cost > player.mana:
+                            battle_log.append(f"{player.name}'s mana is too low to use a skill")
+                        
                 elif event.key == pygame.K_3:
                     inventory_display = True
 
@@ -795,6 +771,50 @@ pygame.quit()
 #Here lies the code that I don't want to delete because I might need it later graveyard
 
 #action=lambda state: state.addItem('key'),
+
+# def battle(player, enemy):
+#     global battle_mode
+#     battle_mode = True  # Switch to battle mode when the battle starts
+#     battle_over = False
+#     battle_turn = 'Player'
+#     battle_log.clear()  # Clear the battle log before starting
+    
+#     while not battle_over:
+#         if battle_turn == 'Player':
+#             # Player's turn: choose an action
+#             battle_log.append(f"{player.name}'s turn!")
+#             # Display attack options and let the player choose
+#             player_action = player_turn()  # Function that handles player input (attack, skill, etc.)
+            
+#             if player_action == 'attack':
+#                 damage = player.baseAtk  # Player's base attack damage
+#                 enemy.health -= damage
+#                 battle_log.append(f"{player.name} attacked {enemy.name} for {damage} damage!")
+#             # Add other actions like skills or items here
+            
+#             battle_turn = 'Enemy'  # Switch turn after player action
+            
+#         elif battle_turn == 'Enemy':
+#             # Enemy's turn: choose an attack
+#             battle_log.append(f"{enemy.name}'s turn!")
+#             damage = enemy.attack()  # Enemy's basic attack
+#             player.health -= damage
+#             battle_log.append(f"{enemy.name} attacked {player.name} for {damage} damage!")
+            
+#             battle_turn = 'Player'  # Switch turn after enemy action
+        
+#         # Check if battle is over
+#         if player.health <= 0:
+#             battle_over = True
+#             battle_log.append(f"{player.name} has been defeated!")
+#         elif enemy.health <= 0:
+#             battle_over = True
+#             battle_log.append(f"{enemy.name} has been defeated!")
+
+#     # return "battle_ended"  # Return to the appropriate story node when the battle is over
+
+# 
+
 
 
 #Here is the graveyard for code I want to use later but am not there just yet
