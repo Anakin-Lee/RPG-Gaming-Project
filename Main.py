@@ -257,6 +257,8 @@ def display_battle_log(screen, font, log, player, enemy):
         y_offset += 30
 
 
+
+
 # Story Node class to hold story content, choices, and actions
 class StoryNode:
     def __init__(self, text, choices=None, action=None, condition=None, actions=None):
@@ -599,6 +601,32 @@ def handle_input(node, event):
 player.setName("player_name")
 
 
+# Load the image and set a color key to make the background transparent (optional)
+sprite_w = pygame.image.load('Wizard.png').convert_alpha()  # Use convert_alpha() for images with transparency
+
+
+
+class Sprite (pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = self.image  # Assign the loaded image
+        self.rect = self.image.get_rect()  # Get the rectangle for positioning
+
+    
+    def Swizard(self):
+        self.image = sprite_w  # Load the image
+    def Sknight(self):
+        return
+    def Sarcher(self):
+        return
+    def Sunfort(self):
+        return
+    
+all_sprites = pygame.sprite.Group()  # Create a group to hold all sprites
+sprite = Sprite(100, 100)  # Create an instance of your player sprite
+all_sprites.add(sprite)  # Add the player to the group
+
+
 # Main game loop
 running = True
 inventory_display = False
@@ -627,6 +655,7 @@ while running:
 
         # Handles battle_mode events
         elif battle_mode:
+            all_sprites.draw(screen)
             print("Battle mode")
             draw_battle()
             # battle(player, enemy)
