@@ -193,7 +193,7 @@ class Gnome(Enemy):
         super().__init__(health = 10, baseAtk = 1, mana = 2, mana_cost=1, skill = 3, name = "Gnome", skill_name = "Gnome Punch", img = image_dict['gnome'])
 class Rat(Enemy):
     def __init__(self):
-        super().__init__(health = 500, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "Chew Penis", img = image_dict['gay_rat'])
+        super().__init__(health = 7, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "Chew Penis", img = image_dict['gay_rat'])
 
 
 
