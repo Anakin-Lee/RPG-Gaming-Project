@@ -52,6 +52,14 @@ def start_menu():
 
     # it'll display the start menu with the options to start the game or quit the game
     return
+
+
+
+
+
+
+
+
         
 class Player:
 
@@ -63,6 +71,9 @@ class Player:
     special_atk = 0
     spec_cost = 0
     cooldown = 0
+    skill_name = "nothing"
+    basic_name = "Basic Attack"
+    xp = 0
    
     def __init__(self):
         self.invent = []
@@ -95,6 +106,8 @@ class Player:
         self.mana = 10
         self.spec_cost = 5
         self.special_atk = 5
+        self.skill_name = "Fireball"
+        self.basic_name = "Firebolt"
         sound_effect = pygame.mixer.Sound('Voices/Mage1.wav')
         sound_effect.play()
         #print you have selected mage
@@ -137,7 +150,7 @@ ememy1 = None
 
 class Enemy:
    
-    def __init__(self, health, baseAtk, mana, mana_cost = 2, luck = 0, skill = 0, name = "Enemy", skill_name = "nothing", basic_name = "Basic Attack"):
+    def __init__(self, health, baseAtk, mana, mana_cost = 2, luck = 0, skill = 0, name = "Enemy", skill_name = "nothing", basic_name = "Basic Attack", atk = None):
         self.health = health
         self.baseAtk = baseAtk
         self.mana = mana
@@ -148,6 +161,7 @@ class Enemy:
         self.name = name
         self.skill_name = skill_name
         self.basic_name = basic_name
+        self.atk = atk
 
     def attack(self):
         print("Enemy used Basic Attack!!")
@@ -164,11 +178,12 @@ class Enemy:
             self.attackType = 'normal'
 
         if self.attackType == 'normal':
-            
+            self.atk = "N"
             return self.attack()
             
         else: 
             self.cooldown = 3
+            self.atk = "S"
             return self.skillAtk()
         
     def spAtkCooldown(self):
@@ -188,7 +203,7 @@ class Gnome(Enemy):
         super().__init__(health = 10, baseAtk = 1, mana = 2, mana_cost=1, skill = 3)
 class Rat(Enemy):
     def __init__(self):
-        super().__init__(health = 500, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "Chew Penis")
+        super().__init__(health = 10, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "Knaw")
 
 
 
@@ -208,6 +223,15 @@ def randomEnemy1():
 def set_enemy1(enemy):
     global enemy1
     enemy1 = enemy
+
+
+
+
+
+
+
+
+
 
 battle_mode = False  # Initially false, will switch to True during battles
 battle_log = [] 
@@ -256,6 +280,18 @@ def display_battle_log(screen, font, log, player, enemy):
         text_surface = mini_font.render(message, True, (WHITE))
         screen.blit(text_surface, (adjust_w(20), y_offset))
         y_offset += adjust_h(20)  # Move down for the next line
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Story Node class to hold story content, choices, and actions
@@ -717,11 +753,15 @@ while running:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_1:
                     enemy1.health -= player.baseAtk
-                    battle_log.append(f"{player.name} attacked {enemy1.name} for {player.baseAtk} damage!")
+                    battle_log.append(f"{player.name} used {player.basic_name} {player.baseAtk} damage!")
 
                     enemy_attack = enemy1.chooseAttack()
                     player.health -= enemy_attack
-                    battle_log.append(f"{enemy1.name} attacked {player.name} with {enemy1.skill_name} for {enemy_attack} damage!")
+                    if enemy1.atk == "N":
+
+                        battle_log.append(f"{enemy1.name} used {enemy1.basic_name} for {enemy_attack} damage!")
+                    else:
+                        battle_log.append(f"{enemy1.name} used {enemy1.skill_name} for {enemy_attack} damage!")
                     player.spAtkCooldown()
 
                 
@@ -729,10 +769,10 @@ while running:
                     if player.cooldown == 0 and player.spec_cost <= player.mana:
                         player.cooldown = 4
                         enemy1.health -= player.special_atk
-                        battle_log.append(f"{player.name} used special attack on {enemy1.name} for {player.special_atk} damage!")
+                        battle_log.append(f"{player.name} used {player.skill_name} for {player.special_atk} damage!")
                         enemy_attack = enemy1.chooseAttack()
                         player.health -= enemy_attack
-                        battle_log.append(f"{enemy1.name} attacked {player.name} with {enemy1.skill_name}for {enemy_attack} damage!")
+                        battle_log.append(f"{enemy1.name} used {enemy1.skill_name}for {enemy_attack} damage!")
                     else :
                         if player.cooldown > 0:
                             battle_log.append(f"{player.name}'s skill is on cooldown for {player.cooldown} turns")
@@ -754,6 +794,7 @@ while running:
                 battle_log.append("You have gained 10 experience points!")
                 battle_log.append("You have gained 5 gold!")
                 battle_log = []
+                player.cooldown = 0
                 enemy1 = None
             if player.health <= 0:
                 battle_mode = False
@@ -761,6 +802,7 @@ while running:
                 battle_log.append("You have lost the battle!")
                 battle_log.append("You have lost 5 gold!")
                 battle_log = []
+                player.cooldown = 0
                 enemy1 = None
                 died = True
             # battle(player, enemy) 
