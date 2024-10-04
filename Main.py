@@ -63,6 +63,7 @@ class Player:
     special_atk = 0
     spec_cost = 0
     cooldown = 0
+    img = image_dict['brad']
    
     def __init__(self):
         self.invent = []
@@ -80,6 +81,8 @@ class Player:
     def hasItem(self, item):
         return item in self.invent
 
+    def set_img(self, img):
+        self.img = img
     
     def setName(self, name):
         self.name = name
@@ -137,7 +140,7 @@ ememy1 = None
 
 class Enemy:
    
-    def __init__(self, health, baseAtk, mana, mana_cost = 2, luck = 0, skill = 0, name = "Enemy", skill_name = "nothing", basic_name = "Basic Attack"):
+    def __init__(self, health, baseAtk, mana, mana_cost = 2, luck = 0, skill = 0, name = "Enemy", skill_name = "nothing", basic_name = "Basic Attack", img = None):
         self.health = health
         self.baseAtk = baseAtk
         self.mana = mana
@@ -148,6 +151,7 @@ class Enemy:
         self.name = name
         self.skill_name = skill_name
         self.basic_name = basic_name
+        self.img = img
 
     def attack(self):
         print("Enemy used Basic Attack!!")
@@ -156,6 +160,9 @@ class Enemy:
     def skillAtk(self):
         print("Enemy used special attack!!")
         return self.skill
+    
+    def set_img(self, img):
+        self.img = img
     
     def chooseAttack(self):
         if self.cooldown == 0 and self.mana >= self.mana_cost:
@@ -179,16 +186,14 @@ def generate_random_enemy():
     enemy = random.choice([Gnome(), Rat()])
     return enemy
 
-
-
 #Subclasses of the general Enemy Class: 
 #level one enemies
 class Gnome(Enemy):
     def __init__(self):
-        super().__init__(health = 10, baseAtk = 1, mana = 2, mana_cost=1, skill = 3)
+        super().__init__(health = 10, baseAtk = 1, mana = 2, mana_cost=1, skill = 3, name = "Gnome", skill_name = "Gnome Punch", img = image_dict['gnome'])
 class Rat(Enemy):
     def __init__(self):
-        super().__init__(health = 500, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "Chew Penis")
+        super().__init__(health = 500, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "Chew Penis", img = image_dict['gay_rat'])
 
 
 
@@ -220,14 +225,31 @@ def player_turn():
     return 'attack'
     
 def display_battle_log(screen, font, log, player, enemy):
-    screen.fill((50, 50, 50))  # Fill the screen with a dark background
+    screen.fill((50, 50, 50))  # Fill the screen with grey background
+
+    player_img = player.img
+    player_img = pygame.transform.scale(player_img, (adjust_w(112), adjust_h(168.75)))
+    player_rect = player_img.get_rect()
+    player_rect.topleft = (adjust_w(30), adjust_h(250) - player_rect.height)
+
+    screen.blit(player_img, player_rect)
+
+    if enemy1 is not None:
+        if enemy1.img is not None:
+            enemy_img = enemy1.img
+            enemy_img = pygame.transform.scale(enemy_img, (adjust_w(150), adjust_h(225)))
+            screen.blit(enemy_img, (adjust_w(500), adjust_h(30)))
     
     # Display the player and enemy health
-    player_health_text = font.render(f"Player Health: {player.health}", True, (255, 255, 255))
-    enemy_health_text = font.render(f"Enemy Health: {enemy.health}", True, (255, 255, 255))
+    player_health_text = small_font.render(f"Player Health: {player.health}", True, (255, 255, 255))
+    player_mana_text = small_font.render(f"Player Mana: {player.mana}", True, (255, 255, 255))
+    player_cooldown_text = small_font.render(f"Player Cooldown: {player.cooldown}", True, (255, 255, 255))
+    enemy_health_text = small_font.render(f"{enemy.name} Health: {enemy.health}", True, (255, 255, 255))
     
     screen.blit(player_health_text, (adjust_w(20), adjust_h(20)))
-    screen.blit(enemy_health_text, (adjust_w(500), adjust_h(20)))
+    screen.blit(player_mana_text, (adjust_w(20), adjust_h(40)))
+    screen.blit(player_cooldown_text, (adjust_w(20), adjust_h(60)))
+    screen.blit(enemy_health_text, (adjust_w(450), adjust_h(20)))
 
     # Creates the black box for options and battle log
     pygame.draw.rect(screen, BLACK, [0, adjust_h(250), screen_width, adjust_h(230)])
@@ -243,12 +265,11 @@ def display_battle_log(screen, font, log, player, enemy):
     pygame.draw.line(screen, WHITE, (screen_width / 2, adjust_h(250)), (screen_width / 2, adjust_h(310)), 5)    
     pygame.draw.line(screen, WHITE, (screen_width * 3 / 4, adjust_h(250)), (screen_width * 3 / 4, adjust_h(310)), 5)
     
+    # Displays the options
     screen.blit(small_font.render("1. Basic Attack", True, WHITE), (adjust_w(5), adjust_h(270)))
     screen.blit(small_font.render("2. Spc Attack", True, WHITE), (screen_width / 4 + adjust_w(5), adjust_h(270)))
     screen.blit(small_font.render("3. Inventory", True, WHITE), (screen_width / 2 + adjust_w(5), adjust_h(270)))
     screen.blit(small_font.render("4. Run", True, WHITE), (screen_width * 3 / 4 + adjust_w(5), adjust_h(270)))
-
-    
 
     # Display the last few battle log entries
     y_offset = adjust_h(330)
@@ -728,11 +749,12 @@ while running:
                 elif event.key == pygame.K_2:
                     if player.cooldown == 0 and player.spec_cost <= player.mana:
                         player.cooldown = 4
+                        player.mana -= player.spec_cost
                         enemy1.health -= player.special_atk
                         battle_log.append(f"{player.name} used special attack on {enemy1.name} for {player.special_atk} damage!")
                         enemy_attack = enemy1.chooseAttack()
                         player.health -= enemy_attack
-                        battle_log.append(f"{enemy1.name} attacked {player.name} with {enemy1.skill_name}for {enemy_attack} damage!")
+                        battle_log.append(f"{enemy1.name} attacked {player.name} with {enemy1.skill_name} for {enemy_attack} damage!")
                     else :
                         if player.cooldown > 0:
                             battle_log.append(f"{player.name}'s skill is on cooldown for {player.cooldown} turns")
@@ -743,8 +765,10 @@ while running:
                     inventory_display = True
 
                 elif event.key == pygame.K_4:
-
+                    current_node = previous_node
+                    battle_log = []
                     battle_mode = False
+
                 elif event.key == pygame.K_i:
                     inventory_display = True
             if enemy1.health <= 0:
