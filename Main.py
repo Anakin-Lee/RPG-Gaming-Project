@@ -137,7 +137,7 @@ ememy1 = None
 
 class Enemy:
    
-    def __init__(self, health, baseAtk, mana, mana_cost = 2, luck = 0, skill = 0, name = "Enemy"):
+    def __init__(self, health, baseAtk, mana, mana_cost = 2, luck = 0, skill = 0, name = "Enemy", skill_name = "nothing", basic_name = "Basic Attack"):
         self.health = health
         self.baseAtk = baseAtk
         self.mana = mana
@@ -146,6 +146,8 @@ class Enemy:
         self.skill = skill
         self.cooldown = 0
         self.name = name
+        self.skill_name = skill_name
+        self.basic_name = basic_name
 
     def attack(self):
         print("Enemy used Basic Attack!!")
@@ -157,12 +159,14 @@ class Enemy:
     
     def chooseAttack(self):
         if self.cooldown == 0 and self.mana >= self.mana_cost:
-            attackType = random.choice(['normal', 'special'])
+            self.attackType = random.choice(['normal', 'special'])
         else:
-            attackType = 'normal'
+            self.attackType = 'normal'
 
-        if attackType == 'normal':
+        if self.attackType == 'normal':
+            
             return self.attack()
+            
         else: 
             self.cooldown = 3
             return self.skillAtk()
@@ -184,7 +188,7 @@ class Gnome(Enemy):
         super().__init__(health = 10, baseAtk = 1, mana = 2, mana_cost=1, skill = 3)
 class Rat(Enemy):
     def __init__(self):
-        super().__init__(health = 500, baseAtk= 1, mana = 3,mana_cost=1, skill = 2)
+        super().__init__(health = 500, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "Chew Penis")
 
 
 
@@ -717,7 +721,7 @@ while running:
 
                     enemy_attack = enemy1.chooseAttack()
                     player.health -= enemy_attack
-                    battle_log.append(f"{enemy1.name} attacked {player.name} for {enemy_attack} damage!")
+                    battle_log.append(f"{enemy1.name} attacked {player.name} with {enemy1.skill_name} for {enemy_attack} damage!")
                     player.spAtkCooldown()
 
                 
@@ -728,7 +732,7 @@ while running:
                         battle_log.append(f"{player.name} used special attack on {enemy1.name} for {player.special_atk} damage!")
                         enemy_attack = enemy1.chooseAttack()
                         player.health -= enemy_attack
-                        battle_log.append(f"{enemy1.name} attacked {player.name} for {enemy1.chooseAttack()} damage!")
+                        battle_log.append(f"{enemy1.name} attacked {player.name} with {enemy1.skill_name}for {enemy_attack} damage!")
                     else :
                         if player.cooldown > 0:
                             battle_log.append(f"{player.name}'s skill is on cooldown for {player.cooldown} turns")
