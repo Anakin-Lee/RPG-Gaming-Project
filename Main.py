@@ -64,15 +64,15 @@ def start_menu():
 class Player:
 
     name = "Nobody"
-    health = 0 
-    baseAtk = 0
-    mana = 0
+    health = 30 
+    baseAtk = 3
+    mana = 50
     luck = 10
-    special_atk = 0
-    spec_cost = 0
+    special_atk = 5
+    spec_cost = 5
     cooldown = 0
     img = image_dict['brad']
-    skill_name = "nothing"
+    skill_name = "Big Bang Attack"
     basic_name = "Basic Attack"
     xp = 0
    
@@ -208,8 +208,10 @@ class Gnome(Enemy):
         super().__init__(health = 10, baseAtk = 1, mana = 2, mana_cost=1, skill = 3, name = "Gnome", skill_name = "Gnome Punch", img = image_dict['gnome'])
 class Rat(Enemy):
     def __init__(self):
-        super().__init__(health = 7, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "Chew Penis", img = image_dict['gay_rat'])
-
+        super().__init__(health = 7, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "nibble nibble", img = image_dict['gay_rat'])
+class Tutorial(Enemy):
+    def __init__(self):
+        super().__init__(health = 20, baseAtk = 0.5, mana = 5, mana_cost = 5, skill = 1, name = "Tutorial Man", skill_name = "Tutorial Punch", img = image_dict['brad'])
 
 
 def neighbor(self):
@@ -388,7 +390,30 @@ story_nodes = {
 
     "main_menu": StoryNode(
         "Hello Player! Welcome to our Game!!!",
-        {"start game": "choose_ch", "quit game": "are_u_sure"}, 
+        {"start game": "choose_ch", "quit game": "are_u_sure", "Tutorial": "tutor"}, 
+        actions={},
+    ),
+      "tutor": StoryNode(
+        "This is a remainder! There will be some scenes with only dispostion and story. These scenes will not have an option to select. To continue to the next"
+        " scene, click the 1 key! Have fun playing our game :)", 
+        {"": "Tutorial"}, 
+        actions={},
+    ),
+    "Tutorial": StoryNode(
+        "Hello Player! This will be a quick tutorial on battling Enemies. Here are a few tips. - Pressing 1 will make you do a basic attack. This is a "
+        "low damage no cost option. - Pressing 2 will use your special skill. This is a high damage attack that requires mana to use with an added cooldown each time it is used."
+        "-If you die do not worry! You will be sent back right before the battle.",
+        {"": "tutbat"}, 
+        actions={},
+    ),
+     "tutbat": StoryNode(
+        "Now that you have some battle knowledge go try your best!!",
+        {"Go to battle": "battleT", "Battle a handsome man": "battleT", "There's only one option here bud": "battleT"}, 
+        actions={"Go to battle": [lambda: set_battle_mode(True), lambda: set_enemy1(Tutorial())], "Battle a handsome man": [lambda: set_battle_mode(True), lambda: set_enemy1(Tutorial())], "There's only one option here bud": [lambda: set_battle_mode(True), lambda: set_enemy1(Tutorial())]},
+    ),
+    "battleT": StoryNode(
+        "Congrats you completed the tutorial! (What a handsome man he was)... Um anyways get out there and have fun!!",
+        {"Main Menu": "main_menu", "Fight the hot dude again": "tutbat"}, 
         actions={},
     ),
     "are_u_sure": StoryNode(
@@ -428,45 +453,39 @@ lost_throne_nodes = {
     ),
     "door": StoryNode(
         "You open the door and see a fugly rat. What do you do?", 
-        {"Attack the rat": "attacked_beginning_rat", "Go back to sleep": "tutor"}, 
+        {"Attack the rat": "attacked_beginning_rat", "Go back to sleep": "sleep"}, 
         actions={"Attack the rat": [lambda: set_battle_mode(True), lambda: set_enemy1(Rat())]},
     ),
     "attacked_beginning_rat": StoryNode(
         "The rat lies dead on the floor. You see baby rats with big wide eyes crying. What do you do?", 
-        {"Suicide": "beginning"}, 
-        actions={},
-    ),
-     "tutor": StoryNode(
-        "This is a remainder! There will be some scenes with only dispostion and story. These scenes will not have an option to select. To continue to the next"
-        " scene, click the 1 key! Have fun playing our game :)", 
-        {"": "beginning"}, 
+        {"Continue Onward": "beginning"}, 
         actions={},
     ),
     "beginning": StoryNode(
-        "Sleep encumbers your body as you begin to fall deep into slumber. Night upon night, you see the same vision in"
-        "your dreams. The king, your father, being brutally stabbed again and again. You watch in horror before you get"
-        "get pulled awayn by a mysterious figure and rushed out of the castle's walls.", 
+        "Sleep encumbers your body as you begin to fall deep into slumber. Night upon night, you see the same vision. "
+        "The king, your father, being brutally stabbed again and again. You watch in horror before you "
+        "get pulled away by a mysterious figure and rushed out of the castle walls.", 
         {"" : "WakeDream"}, 
         actions={},
     ),
     "WakeDream": StoryNode(
-        "You awake from your dream with sweat dripping down your forehead, however this time you feel your eyes begin"
-        "to tear up as the memory of your father fade away. Around you is a room surrounded by wood walls beginning to rot"
-        "This is the room you have grown up in from an early age every since that fateful night", 
+        "You awake from your dream with sweat dripping down your forehead, however this time you feel your eyes begin "
+        "to tear up as the memory of your father fades away. Around you is a room surrounded by wood walls beginning to rot. "
+        "This is the room you grew up in from an early age every since that fateful night.", 
         {"" : "roomBack"}, 
         actions={},
     ),
     "roomBack": StoryNode(
-        "Countess Adala owns this rundown shack. She is the person who saved you from that young age of 10 . She took you"
+        "Countess Adala owns this rundown shack. She is the person who saved you at the young age of 10. She took you "
         "in as her own kin and has raised you all this time. On your 17th birthday Adala finally told you what happend"
-         "to your father and the kingdom. The kingdom that is rightfully yours as you are the heir to the king.", 
+         " to your father and the kingdom. The kingdom that is rightfully yours as you are the heir to the king.", 
         {"" : "finalExpo"}, 
         actions={},
     ),
     "finalExpo": StoryNode(
-        "An image replays in your head as you recall your 17th birthday. Adala sitting you down telling you how the throne"
+        "An image replays in your head as you recall your 17th birthday. Adala sitting you down telling you how the throne "
         "is falsely claimed. That your father was killed and replaced and it is your right to take it back and save the kingdom."
-        "Your Kingdom. Adala tells you that she supports whatever choice you make but will support you if you choose a path of revenge", 
+        "Your Kingdom. Adala tells you that she supports whatever choice you make but will be there for you if you choose a path of revenge.", 
         {"" : "throneBegin"}, 
         actions={},
     ),
