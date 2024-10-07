@@ -139,11 +139,11 @@ class Player:
         #print in animation you have selected archer
 
     def set_unfortunate(self):
-        self.health = 1
+        self.health = 6
         self.baseAtk = 1
         self.mana = 20
         self.luck = 30
-        self.special_atk = 5
+        self.special_atk = 2
         self.spec_cost = 2
         sound_effect = pygame.mixer.Sound('Voices/Unfortunate1.wav')
         sound_effect.play()
