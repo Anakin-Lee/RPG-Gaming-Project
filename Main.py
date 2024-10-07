@@ -135,7 +135,7 @@ class Player:
         self.spec_cost = 2
         sound_effect = pygame.mixer.Sound('Voices/Archer1.wav')
         sound_effect.play()
-        # self.img = image_dict['archer']
+        self.img = image_dict['archer']
         #print in animation you have selected archer
 
     def set_unfortunate(self):
@@ -147,7 +147,7 @@ class Player:
         self.spec_cost = 2
         sound_effect = pygame.mixer.Sound('Voices/Unfortunate1.wav')
         sound_effect.play()
-        # self.img = image_dict['unfortunate']
+        self.img = image_dict['unf']
         #print in animation you have selected unfortunate
 
 
@@ -727,17 +727,17 @@ def display_classes():
     if set_display_classes is True:
         wizard_img = image_dict['wizard']
         knight_img = image_dict['knight']
-        # archer_img = image_dict['brad']
+        archer_img = image_dict['archer']
         unfortunate_img = image_dict['unf']
 
         wizard_img = pygame.transform.scale(wizard_img, (adjust_w(150), adjust_h(225)))
         knight_img = pygame.transform.scale(knight_img, (adjust_w(150), adjust_h(225)))
-        # archer_img = pygame.transform.scale(archer_img, (200, 200))
+        archer_img = pygame.transform.scale(archer_img, (adjust_w(150), adjust_h(225)))
         unfortunate_img = pygame.transform.scale(unfortunate_img, (adjust_w(150), adjust_h(225)))
 
         screen.blit(wizard_img, (adjust_w(30), adjust_h(30)))
         screen.blit(knight_img, (adjust_w(200), adjust_h(30)))
-        # screen.blit(archer_img, (400, 50))
+        screen.blit(archer_img, (adjust_w(370), adjust_h(30)))
         screen.blit(unfortunate_img, (adjust_w(550), adjust_h(30)))
 
 set_display_brad = True
