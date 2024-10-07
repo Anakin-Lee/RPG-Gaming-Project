@@ -395,7 +395,7 @@ story_nodes = {
     "main_menu": StoryNode(
         "Hello Player! Welcome to our Game!!!",
         {"start game": "choose_ch", "quit game": "are_u_sure", "Tutorial": "tutor"}, 
-        actions={},
+        actions={"start game": [lambda: set_classes(True), lambda: set_brad(False)]},
     ),
       "tutor": StoryNode(
         "This is a remainder! There will be some scenes with only dispostion and story. These scenes will not have an option to select. To continue to the next"
@@ -433,7 +433,7 @@ story_nodes = {
      "choose_ch": StoryNode(
         "Hello adventurer! Choose your class:", 
         {"Mage": "choose_bg", "Knight": "choose_bg", "Archer": "choose_bg", "Unfortunate": "choose_bg"},
-        actions={"Mage": [player.set_mage], "Knight": [player.set_knight], "Archer": [player.set_archer], "Unfortunate": [player.set_unfortunate]},
+        actions={"Mage": [player.set_mage, lambda: set_classes(False)], "Knight": [player.set_knight, lambda: set_classes(False)], "Archer": [player.set_archer, lambda: set_classes(False)], "Unfortunate": [player.set_unfortunate, lambda: set_classes(False)]},
     ),
      "choose_bg": StoryNode(
         "Choose your background of your character(This will dictate the story)", 
@@ -610,6 +610,7 @@ def draw_story(node):
 
     draw_characters()
     display_classes()
+    display_brad()
 
     pygame.draw.rect(screen, BLACK, [0, adjust_h(250), screen_width, adjust_h(230)])
     
@@ -717,24 +718,39 @@ class Sprite (pygame.sprite.Sprite):
 all_sprites = pygame.sprite.Group()  # Create a group to hold all sprites
 # sprite = Sprite(100, 100)  # Create an instance of your player sprite
 # all_sprites.add(sprite)  # Add the player to the group
-display_classes = False
+set_display_classes = False
+def set_classes(temp):
+    global set_display_classes
+    set_display_classes = temp
+
 def display_classes():
-    wizard_img = image_dict['brad']
-    # knight_img = image_dict['knight']
-    # archer_img = pygame.image.load('img/Archer.png')
-    # unfortunate_img = image_dict['stinky']
+    if set_display_classes is True:
+        wizard_img = image_dict['wizard']
+        knight_img = image_dict['knight']
+        # archer_img = image_dict['brad']
+        unfortunate_img = image_dict['unf']
 
-    wizard_img = pygame.transform.scale(wizard_img, (adjust_w(150), adjust_h(225)))
-    # knight_img = pygame.transform.scale(knight_img, (adjust_w(150), adjust_h(225)))
-    # archer_img = pygame.transform.scale(archer_img, (200, 200))
-    # unfortunate_img = pygame.transform.scale(unfortunate_img, (adjust_w(150), adjust_h(225)))
+        wizard_img = pygame.transform.scale(wizard_img, (adjust_w(150), adjust_h(225)))
+        knight_img = pygame.transform.scale(knight_img, (adjust_w(150), adjust_h(225)))
+        # archer_img = pygame.transform.scale(archer_img, (200, 200))
+        unfortunate_img = pygame.transform.scale(unfortunate_img, (adjust_w(150), adjust_h(225)))
 
-    screen.blit(wizard_img, (adjust_w(30), adjust_h(30)))
-    # screen.blit(knight_img, (adjust_w(200), adjust_h(30)))
-    # screen.blit(archer_img, (230, 50))
-    # screen.blit(unfortunate_img, (adjust_w(300), adjust_h(30)))
+        screen.blit(wizard_img, (adjust_w(30), adjust_h(30)))
+        screen.blit(knight_img, (adjust_w(200), adjust_h(30)))
+        # screen.blit(archer_img, (400, 50))
+        screen.blit(unfortunate_img, (adjust_w(550), adjust_h(30)))
 
-# def 
+set_display_brad = True
+def set_brad(temp):
+    global set_display_brad
+    set_display_brad = temp
+
+def display_brad():
+    if set_display_brad is True:
+        brad_img = image_dict['brad']
+        brad_img = pygame.transform.scale(brad_img, (adjust_w(150), adjust_h(225)))
+        screen.blit(brad_img, (adjust_w(30), adjust_h(30)))
+
 
 # Main game loop
 running = True
