@@ -113,6 +113,7 @@ class Player:
         self.basic_name = "Firebolt"
         sound_effect = pygame.mixer.Sound('Voices/Mage1.wav')
         sound_effect.play()
+        self.img = image_dict['wizard']
         #print you have selected mage
 
     def set_knight(self):
@@ -123,6 +124,7 @@ class Player:
         self.spec_cost = 2
         sound_effect = pygame.mixer.Sound('Voices/Knight1.wav')
         sound_effect.play()
+        self.img = image_dict['knight']
         #print in animation you have selected knight
 
     def set_archer(self):
@@ -133,6 +135,7 @@ class Player:
         self.spec_cost = 2
         sound_effect = pygame.mixer.Sound('Voices/Archer1.wav')
         sound_effect.play()
+        # self.img = image_dict['archer']
         #print in animation you have selected archer
 
     def set_unfortunate(self):
@@ -144,6 +147,7 @@ class Player:
         self.spec_cost = 2
         sound_effect = pygame.mixer.Sound('Voices/Unfortunate1.wav')
         sound_effect.play()
+        # self.img = image_dict['unfortunate']
         #print in animation you have selected unfortunate
 
 
