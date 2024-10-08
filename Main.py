@@ -1,10 +1,8 @@
 import pygame
-import pygame_gui
 import sys
 import random
 import os
 
-from pygame_gui.elements import UITextEntryLine
 
 pygame.init()
 pygame.mixer.init()
@@ -74,7 +72,7 @@ class Player:
     img = image_dict['brad']
     skill_name = "Big Bang Attack"
     basic_name = "Basic Attack"
-    xp = 0
+    
    
     def __init__(self):
         self.invent = []
@@ -98,10 +96,12 @@ class Player:
     def setName(self, name):
         self.name = name
 
-    def selectionMenu(self):
-        #print choose your class: 
-
-        return
+    def xp (self):
+        self.health += 5
+        self.baseAtk += 5
+        self.special_atk += 5
+        self.mana += 3
+        print("You leveled up!")
     
     def set_mage(self):
         self.health = 8
@@ -215,8 +215,10 @@ class Rat(Enemy):
         super().__init__(health = 7, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "nibble nibble", img = image_dict['gay_rat'])
 class Tutorial(Enemy):
     def __init__(self):
-        super().__init__(health = 20, baseAtk = 0.5, mana = 5, mana_cost = 5, skill = 1, name = "Tutorial Man", skill_name = "Tutorial Punch", img = image_dict['brad'])
-
+        super().__init__(health = 20, baseAtk = 0.5, mana = 5, mana_cost = 5, skill = 1, name = "Tutorial Man", skill_name = "Tutorial Punch", img = pygame.transform.flip(image_dict['brad'], True, False))
+class Alex(Enemy):
+    def __init__(self):
+        super().__init__(health = 7, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "nibble nibble", img = image_dict['AlexTutorial'])
 
 def neighbor(self):
     self.health = 10
@@ -227,14 +229,16 @@ def neighbor(self):
     self.name = "Tom (your spawn of the devil neighbor)"
 
 def randomEnemy1():
-    chooseEnemey = [Gnome, Rat, None]
-    currentEnemy = random.choice(chooseEnemey)
+    chooseEnemy = [Gnome, Rat, None]
+    currentEnemy = random.choice(chooseEnemy)
     return currentEnemy
 
 def set_enemy1(enemy):
     global enemy1
     enemy1 = enemy
 
+
+set_enemy1(generate_random_enemy())
 
 
 
@@ -395,7 +399,7 @@ story_nodes = {
     "main_menu": StoryNode(
         "Hello Player! Welcome to our Game!!!",
         {"start game": "choose_ch", "quit game": "are_u_sure", "Tutorial": "tutor"}, 
-        actions={"start game": [lambda: set_classes(True), lambda: set_brad(False)]},
+        actions={"start game": [lambda: set_classes(True), lambda: set_brad(False), lambda: set_alex(False)]},
     ),
       "tutor": StoryNode(
         "This is a remainder! There will be some scenes with only dispostion and story. These scenes will not have an option to select. To continue to the next"
@@ -458,7 +462,7 @@ lost_throne_nodes = {
     "door": StoryNode(
         "You open the door and see a fugly rat. What do you do?", 
         {"Attack the rat": "attacked_beginning_rat", "Go back to sleep": "sleep"}, 
-        actions={"Attack the rat": [lambda: set_battle_mode(True), lambda: set_enemy1(Rat())]},
+        actions={"Attack the rat": [lambda: set_battle_mode(True), lambda: set_enemy1(generate_random_enemy())]},
     ),
     "attacked_beginning_rat": StoryNode(
         "The rat lies dead on the floor. You see baby rats with big wide eyes crying. What do you do?", 
@@ -611,6 +615,7 @@ def draw_story(node):
     draw_characters()
     display_classes()
     display_brad()
+    display_alex()
 
     pygame.draw.rect(screen, BLACK, [0, adjust_h(250), screen_width, adjust_h(230)])
     
@@ -750,6 +755,16 @@ def display_brad():
         brad_img = image_dict['brad']
         brad_img = pygame.transform.scale(brad_img, (adjust_w(150), adjust_h(225)))
         screen.blit(brad_img, (adjust_w(30), adjust_h(30)))
+
+set_display_alex = True
+def set_alex(temp):
+    global set_display_alex
+    set_display_alex = temp
+def display_alex():
+    if set_display_alex is True:
+        alex_img = image_dict['AlexTutorial']
+        alex_img = pygame.transform.scale(alex_img, (adjust_w(200), adjust_h(300)))
+        screen.blit(alex_img, (adjust_w(500), adjust_h(30)))
 
 
 # Main game loop
