@@ -97,11 +97,19 @@ class Player:
         self.name = name
 
     def xp (self):
-        self.health += 5
-        self.baseAtk += 2
-        self.special_atk += 3
-        self.mana += 3
+        self.health += 1
+        self.baseAtk += 1
+        self.special_atk += 1
         print("You leveled up!")
+    def xpH(self):
+        self.health +=3
+    def xpB(self):
+        self.baseAtk +=1
+    def xpS(self):
+        self.special_atk +=1
+    def xpM(self):
+        self.mana +=2
+        
     
     def set_mage(self):
         self.health = 8
@@ -446,28 +454,8 @@ story_nodes = {
 }
 
 lost_throne_nodes = {
-
+   
     "begin_story": StoryNode(
-        "You wake up in a dark room. You have no idea how you got here. You see a door in front of you. What do you do?", 
-        {"Open the door": "door", "Go back to sleep": "sleep"}, 
-        actions={},
-    ),
-    "sleep": StoryNode(
-        "You are sleeping", 
-        {"Wake up": "begin_story"}, 
-        actions={},
-    ),
-    "door": StoryNode(
-        "You open the door and see a fugly rat. What do you do?", 
-        {"Attack the rat": "attacked_beginning_rat", "Go back to sleep": "sleep"}, 
-        actions={"Attack the rat": [lambda: set_battle_mode(True), lambda: set_enemy1(generate_random_enemy())]},
-    ),
-    "attacked_beginning_rat": StoryNode(
-        "The rat lies dead on the floor. You see baby rats with big wide eyes crying. What do you do?", 
-        {"Continue Onward": "beginning"}, 
-        actions={},
-    ),
-    "beginning": StoryNode(
         "Sleep encumbers your body as you begin to fall deep into slumber. Night upon night, you see the same vision. "
         "The king, your father, being brutally stabbed again and again. You watch in horror before you "
         "get pulled away by a mysterious figure and rushed out of the castle walls.", 
