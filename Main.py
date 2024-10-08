@@ -98,8 +98,8 @@ class Player:
 
     def xp (self):
         self.health += 5
-        self.baseAtk += 5
-        self.special_atk += 5
+        self.baseAtk += 2
+        self.special_atk += 3
         self.mana += 3
         print("You leveled up!")
     
@@ -218,7 +218,11 @@ class Tutorial(Enemy):
         super().__init__(health = 20, baseAtk = 0.5, mana = 5, mana_cost = 5, skill = 1, name = "Tutorial Man", skill_name = "Tutorial Punch", img = pygame.transform.flip(image_dict['brad'], True, False))
 class Alex(Enemy):
     def __init__(self):
-        super().__init__(health = 7, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "nibble nibble", img = image_dict['AlexTutorial'])
+        super().__init__(health = 7, baseAtk= 1, mana = 3,mana_cost=1, skill = 2, name= "Gay Rat", skill_name= "nibble nibble", img = image_dict['alex'])
+
+
+
+
 
 def neighbor(self):
     self.health = 10
@@ -228,17 +232,11 @@ def neighbor(self):
     skill = None
     self.name = "Tom (your spawn of the devil neighbor)"
 
-def randomEnemy1():
-    chooseEnemy = [Gnome, Rat, None]
-    currentEnemy = random.choice(chooseEnemy)
-    return currentEnemy
-
 def set_enemy1(enemy):
     global enemy1
     enemy1 = enemy
 
 
-set_enemy1(generate_random_enemy())
 
 
 
@@ -762,8 +760,8 @@ def set_alex(temp):
     set_display_alex = temp
 def display_alex():
     if set_display_alex is True:
-        alex_img = image_dict['AlexTutorial']
-        alex_img = pygame.transform.scale(alex_img, (adjust_w(200), adjust_h(300)))
+        alex_img = image_dict['alex']
+        alex_img = pygame.transform.scale(alex_img, (adjust_w(150), adjust_h(250)))
         screen.blit(alex_img, (adjust_w(500), adjust_h(30)))
 
 
