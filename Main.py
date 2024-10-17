@@ -2,6 +2,7 @@ import pygame
 import sys
 import random
 import os
+import json
 
 
 pygame.init()
@@ -72,6 +73,7 @@ class Player:
     img = image_dict['brad']
     skill_name = "Big Bang Attack"
     basic_name = "Basic Attack"
+    level = 0
     
    
     def __init__(self):
@@ -96,12 +98,7 @@ class Player:
     def setName(self, name):
         self.name = name
 
-    def xp (self):
-        self.health += 5
-        self.baseAtk += 2
-        self.special_atk += 3
-        self.mana += 3
-        print("You leveled up!")
+        
     
     def set_mage(self):
         self.health = 8
@@ -149,6 +146,21 @@ class Player:
         sound_effect.play()
         self.img = image_dict['unf']
         #print in animation you have selected unfortunate
+
+    def xp (self):
+        self.health += 1
+        self.baseAtk += 1
+        self.special_atk += 1
+        self.level +=1
+        print("You leveled up!")
+    def xpH(self):
+        self.health +=3
+    def xpB(self):
+        self.baseAtk +=1
+    def xpS(self):
+        self.special_atk +=1
+    def xpM(self):
+        self.mana +=2
 
 
 player = Player()
@@ -201,9 +213,7 @@ class Enemy:
         if self.cooldown > 0:
             self.cooldown -=1
 
-def generate_random_enemy():
-    enemy = random.choice([Gnome(), Rat()])
-    return enemy
+
 
 #Subclasses of the general Enemy Class: 
 #level one enemies
@@ -232,12 +242,15 @@ def neighbor(self):
     skill = None
     self.name = "Tom (your spawn of the devil neighbor)"
 
+
+def generate_random_enemy():
+    enemy = random.choice([Gnome(), Rat()])
+    return enemy
+
+
 def set_enemy1(enemy):
     global enemy1
     enemy1 = enemy
-
-
-
 
 
 
@@ -446,28 +459,8 @@ story_nodes = {
 }
 
 lost_throne_nodes = {
-
+   
     "begin_story": StoryNode(
-        "You wake up in a dark room. You have no idea how you got here. You see a door in front of you. What do you do?", 
-        {"Open the door": "door", "Go back to sleep": "sleep"}, 
-        actions={},
-    ),
-    "sleep": StoryNode(
-        "You are sleeping", 
-        {"Wake up": "begin_story"}, 
-        actions={},
-    ),
-    "door": StoryNode(
-        "You open the door and see a fugly rat. What do you do?", 
-        {"Attack the rat": "attacked_beginning_rat", "Go back to sleep": "sleep"}, 
-        actions={"Attack the rat": [lambda: set_battle_mode(True), lambda: set_enemy1(generate_random_enemy())]},
-    ),
-    "attacked_beginning_rat": StoryNode(
-        "The rat lies dead on the floor. You see baby rats with big wide eyes crying. What do you do?", 
-        {"Continue Onward": "beginning"}, 
-        actions={},
-    ),
-    "beginning": StoryNode(
         "Sleep encumbers your body as you begin to fall deep into slumber. Night upon night, you see the same vision. "
         "The king, your father, being brutally stabbed again and again. You watch in horror before you "
         "get pulled away by a mysterious figure and rushed out of the castle walls.", 
@@ -496,16 +489,16 @@ lost_throne_nodes = {
         actions={},
     ),
     "throneBegin": StoryNode(
-        "", 
-        {}, 
-        actions={},
+        "But first, You're looking a little more mature today. More grown up. I guess that's what happens when it's your 18th birthday today kiddo. (This is your first level up! Choose a skill to increase)", 
+        {"Increase Health" : "TFchoice", "Increase attack" : "TFchoice", "Increase skill dmg" : "TFchoice", "Increase Mana" : "TFchoice"}, 
+        actions={"Increase Health" : [player.xpH, player.xp], "Increase attack" : [player.xpB, player.xp], "Increase skill dmg" : [player.xpS, player.xp], "Increase Mana" : [player.xpM, player.xp]},
     ),
-    "": StoryNode(
-        "", 
-        {}, 
-        actions={},
+    "TFchoice": StoryNode(
+        "jafldh", 
+        {"test battle" : "battle"}, 
+        actions={"test battle" : [lambda: set_battle_mode(True), lambda: set_enemy1(generate_random_enemy())]},
     ),
-    "": StoryNode(
+    "battle": StoryNode(
         "", 
         {}, 
         actions={},
@@ -537,6 +530,8 @@ tournament_nodes = {
         actions={},
     ),
 }
+
+
 
 # Screen dimensions
 screen_width = 720
@@ -765,6 +760,42 @@ def display_alex():
         screen.blit(alex_img, (adjust_w(500), adjust_h(30)))
 
 
+game_state = {
+    "current_node":current_node,
+    "inventory": player.invent,
+    "health": player.health,
+    "baseAtk": player.baseAtk,
+    "skill": player.special_atk,
+    "mana": player.mana,
+    "level": player.level
+
+}
+
+def save_state(filename, game_state):
+    with open(filename, 'w') as save_file:
+        json.dump(game_state, save_file)
+
+#This function will save the game
+#save_state('save_file.json', game_state)
+
+def load_game(file_name):
+    with open(file_name, 'r') as save_file:
+        game_state = json.load(save_file)
+    return game_state
+
+def loading():
+    global current_node
+    game_state = load_game('save_file.json')
+    current_node = game_state["current_node"]
+    player.invent = game_state["inventory"]
+    player.health = game_state["health"]
+    player.baseAtk = game_state["baseAtk"]
+    player.special_atk = game_state["skill"]
+    player.mana = game_state["mana"]
+    player.level = game_state["level"]
+    
+
+
 # Main game loop
 running = True
 inventory_display = False
@@ -781,6 +812,12 @@ while running:
     update_dimensions()
 
     for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                save_state('save_file.json', game_state)
+            if event.key == pygame.K_l:
+                load_game('save_file.json')
+                loading()
         # Check if the player wants to quit
         if event.type == pygame.QUIT:
             running = False
